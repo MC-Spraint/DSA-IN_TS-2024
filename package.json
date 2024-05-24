@@ -1,0 +1,50 @@
+{
+  "name": "dsa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src",
+  "scripts": {
+    "start:devv": "nodemon --watch src --exec ts-node src/main.ts --verbose",
+    "start:dev": "ts-node-dev --respawn src/main.ts",
+    "seed": "ts-node-dev --respawn --transpile-only src/seed.ts",
+    "build": "tsc -p .",
+    "start:prod": "node dist/.main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dsa": "ts-node-dev --respawn --transpile-only src/dsa.ts",
+    "strm": "ts-node-dev --respawn --transpile-only src/conceptual/streams.ts",
+    "cm": "ts-node-dev --respawn --transpile-only src/conceptual/cluster-module.ts",
+    "cp": "ts-node-dev --respawn --transpile-only src/conceptual/child-process.ts",
+    "ds": "ts-node-dev --respawn --transpile-only src/conceptual/download-stream.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/dotenv": "^8.2.0",
+    "@types/multer": "^1.4.11",
+    "@types/passport": "^1.0.16",
+    "@types/passport-jwt": "^4.0.1",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.11.5",
+    "sequelize": "^6.37.3",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/mongoose": "^5.11.97",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}

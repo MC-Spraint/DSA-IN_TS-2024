@@ -1,0 +1,56 @@
+## NodeJs Coding Concept Questions(6)
+
+### [1] IIFE(Immediately Invoked Function Expression):
+
+An Immediately Invoked Function Expression (IIFE) is a JavaScript function that is defined and executed immediately after its creation. It is a way to encapsulate code within a function to avoid polluting the global scope.
+
+### [2] Promise Chaining:
+
+Promise chaining is a technique in JavaScript that involves chaining multiple promises together to **handle a sequence of asynchronous operations** in a more readable and organized manner. It is a way to express a series of asynchronous tasks one after the other, making the code easier to understand and maintain.
+
+### [3] Closure:
+
+ A closure is formed when a function is defined within another function, allowing the inner function to access the outer function's variables and parameters, even after the outer function has finished executing.
+ it is a fundamental concept in programming, particularly in languages that support first-class functions or function values.
+
+### [4] Currying:
+
+The term "currying" refers to a process in functional programming where a function is transformed into a sequence of functions, each taking a single argument. In other words, a curried function is a function that returns another function with one or more arguments "pre-filled."
+
+### [5] Hoisting:
+
+Hoisting is a JavaScript behavior in which variable and function declarations are moved to the top of their containing scope during the compilation phase, before code execution begins. This means that variables and functions can be referenced before they are declared in the code. It's important to note that only declarations are hoisted, not initializations.
+
+### [6] Generators:
+
+Answer: Generators are functions that can be exited and later re-entered, with their context (variable bindings) saved across re-entrances. Generators are particularly useful for managing asynchronous programming in a more synchronous fashion, especially before async/await was introduced.
+
+## Example: 
+````javascript
+function* idGenerator() 
+{
+     let id = 1; 
+     while (true)  yield id++; 
+} 
+const gen = idGenerator(); 
+// "Generator { }" console.log(gen.next().value); 
+// 1 console.log(gen.next().value); 
+// 2 console.log(gen.next().value);
+
+````
+## [7] Higher-order Functions
+
+Higher-order functions are functions that take other functions as arguments or return functions as results. They enable functional programming paradigms such as function composition, currying, and callback-based asynchronous programming.
+
+2. What are the differences between let, var, and const?
+Answer:
+
+var is function-scoped and can be re-declared and updated throughout the function.
+let is block-scoped, can be updated but not re-declared in the same scope.
+const is block-scoped, cannot be updated or re-declared once initialized.
+
+## [8] Event Delegation
+
+Event delegation is a technique in which a single event listener is attached to a parent element to handle events for multiple child elements. It improves performance and reduces memory consumption by avoiding the need to attach event listeners to each individual element.
+
+
