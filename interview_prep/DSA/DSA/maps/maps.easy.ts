@@ -143,27 +143,55 @@ export class MapsEasy {
   }
 
   /**[9]*/
-  longestSubarrayWithKSum(nums: number[], k: number): number {
-    const map = new Map<number, number>();
+  static longestConsecutive(nums: number[]): number[] {
+    let numSet = new Set<number>(nums);
+    let longestSeq: number[] = [];
+    // let maxLength: number = 0;
+
+    for (let num of nums) {
+      if (!numSet.has(num - 1)) {
+        let currentSeq: number[] = [];
+        let curr = num;
+        // let seqLength = 0;
+        while (numSet.has(curr)) {
+          currentSeq.push(curr);
+          // seqLength++;
+          curr++;
+        }
+        // maxLength = Math.max(maxLength, seqLength);
+        if (longestSeq.length < currentSeq.length) longestSeq = currentSeq;
+      }
+    }
+    return longestSeq;
+  }
+  /**[10]*/
+  static largestSubarrayWithSumK(nums: number[], k: number): number[] {
+    const map: Map<number, number> = new Map();
+    const n = nums.length;
     let maxLength = 0;
+    let start = 0;
     let sum = 0;
 
-    for (let i = 0; i < nums.length; i++) {
-      sum += nums[i];
-
-      if (sum === k) {
-        maxLength = i + 1;
-      } else if (map.has(sum - k)) {
-        maxLength = Math.max(maxLength, i - map.get(sum - k)!);
-      }
-
-      if (!map.has(sum)) map.set(sum, i);
+    for (let i = 0; i < n; i++) {
+        sum += nums[i];
+        const remaining = sum - k;
+        if (!remaining) {
+            maxLength = i + 1;
+            start = 0;
+        }
+        if(map.has(remaining)) {
+            const newLength = i - map.get(remaining)!;
+            if (maxLength < newLength) {
+                maxLength = newLength;
+                start = map.get(remaining)! + 1;
+            }
+        }
+        if (!map.has(sum)) map.set(sum, i);
     }
+    return nums.slice(start, start + maxLength);
+}
 
-    return maxLength;
-  }
-
-  /**[10] */
+  /**[11] */
   static lengthOfLongestSubstring(s: string): number {
     const charIndexMap = new Map<string, number>();
     let maxLength = 0;
@@ -181,7 +209,7 @@ export class MapsEasy {
     return maxLength;
   }
 
-  /**[11] */
+  /**[12] */
   static topKFrequent(nums: number[], k: number): number[] {
     const numMap = new Map<number, number>();
     for (const num of nums) {
@@ -194,7 +222,7 @@ export class MapsEasy {
     return sortedNums.slice(0, k);
   }
 
-  /**[12] */
+  /**[13] */
   static wordFrequency(text: string): Map<string, number> {
     const words = text.toLowerCase().split(/\W+/).filter(Boolean);
     const freqMap = new Map<string, number>();

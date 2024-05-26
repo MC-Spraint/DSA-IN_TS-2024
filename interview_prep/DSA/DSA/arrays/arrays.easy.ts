@@ -3,6 +3,7 @@ export class ArraysEasy {
   static removeDuplicates(arr: number[]): number[] {
     return arr.filter((item, index) => arr.indexOf(item) === index);
   }
+
   /**[2]*/
   static inverse(arr: number[]): number[] {
     const inv: number[] = new Array(arr.length);
@@ -22,7 +23,6 @@ export class ArraysEasy {
     }
     throw new Error("No two sum solution");
   }
-
   /**[4]*/
   static findLeaders(a: number[]): number[] {
     let maxRight = a[a.length - 1];
@@ -36,30 +36,6 @@ export class ArraysEasy {
     return leaders;
   }
   /**[5]*/
-  static maxProfit(prices: number[]): number {
-    if (prices.length === 0) return 0;
-
-    let minPrice = prices[0];
-    let maxProfit = 0;
-    for (let i = 1; i < prices.length; i++) {
-      minPrice = Math.min(minPrice, prices[i]);
-      maxProfit = Math.max(maxProfit, prices[i] - minPrice);
-    }
-    return maxProfit;
-  }
-
-  /**[6]*/
-  static moveZeroes(nums: number[]): void {
-    let zeroToMoveAt = 0;
-    for (let i = 0; i < nums.length; i++) {
-      if (nums[i] !== 0) {
-        [nums[i], nums[zeroToMoveAt]] = [nums[zeroToMoveAt], nums[i]];
-        zeroToMoveAt++;
-      }
-    }
-  }
-
-  /**[7]*/
   static majorityElementBoyerMoore(a: number[]): number {
     let majorityElement = a[0],
       count = 1;
@@ -69,7 +45,7 @@ export class ArraysEasy {
     }
     return majorityElement;
   }
-  /**[8]*/
+  /**[6]*/
   static maxConsecutiveNumbers(arr: number[], num: number): number {
     let counter = 0;
     let max = 0;
@@ -81,7 +57,7 @@ export class ArraysEasy {
     }
     return max;
   }
-  /**[9]*/
+  /**[7]*/
   static longestConsecutive(nums: number[]): number[] {
     let numSet = new Set<number>(nums);
     let longestSeq: number[] = [];
@@ -104,7 +80,7 @@ export class ArraysEasy {
     return longestSeq;
   }
 
-  /**[10]*/
+  /**[8]*/
   static ceilAndFloors(
     nums: number[]
   ): [Map<number, number>, Map<number, number>] {
@@ -126,7 +102,7 @@ export class ArraysEasy {
     return [ceils, floors];
   }
 
-  /**[11]*/
+  /**[9]*/
   static secondLargestElement(arr: number[]): number {
     let max = arr[0];
     for (let i = 0; i < arr.length; i++) {
@@ -141,35 +117,8 @@ export class ArraysEasy {
     }
     return floor;
   }
-  /**[12]*/
-  static span(arr: number[]): number {
-    let max = arr[0];
-    let min = arr[0];
-    for (let i = 0; i < arr.length; i++) {
-      max = Math.max(max, arr[i]);
-      min = Math.min(min, arr[i]);
-    }
-    return max - min;
-  }
-  /**[13]*/
 
-  static productExceptSelf(nums: number[]): number[] {
-    let output: number[] = [];
-    let product = 1;
-    for (let i = nums.length - 1; i >= 0; i--) {
-      output[i] = product;
-      product *= nums[i];
-    }
-    product = 1;
-    for (let i = 0; i < nums.length; i++) {
-      output[i] *= product;
-      product *= nums[i];
-    }
-
-    return output;
-  }
-
-  /**[14]*/
+  /**[10]*/
   static rotateArray(nums: number[], k: number): void {
     const reverse = (nums: number[], start: number, end: number): void => {
       while (start < end) {
@@ -188,7 +137,7 @@ export class ArraysEasy {
     //Reverse the entire array at first to rotate to right
   }
 
-  /**[15]*/
+  /**[11]*/
   static searchInRotatedArray(nums: number[], target: number): number {
     let l = 0;
     let r = nums.length - 1;
@@ -207,40 +156,80 @@ export class ArraysEasy {
     }
     return -1;
   }
-  /**[16]*/
+  /**[12]*/
+  static productExceptSelf(nums: number[]): number[] {
+    let output: number[] = [];
+    let product = 1;
+    for (let i = nums.length - 1; i >= 0; i--) {
+      output[i] = product;
+      product *= nums[i];
+    }
+    product = 1;
+    for (let i = 0; i < nums.length; i++) {
+      output[i] *= product;
+      product *= nums[i];
+    }
+
+    return output;
+  }
+  /**[13]*/
+  static candy(ratings: number[]) {
+    const n = ratings.length;
+    const candies = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+      if (ratings[i] > ratings[i - 1]) {
+        candies[i] = candies[i - 1] + 1;
+      }
+    }
+    for (let i = n - 2; i >= 0; i--) {
+      if (ratings[i] > ratings[i + 1]) {
+        candies[i] = Math.max(candies[i], candies[i + 1] + 1);
+      }
+    }
+
+    return candies.reduce((total, current) => total + current, 0);
+  }
+  /**[14]*/
   static maximumSubArraySum(a: number[]): number {
     let maxSum = -Infinity;
     let sum = 0;
-    for (const i of a) {
-      sum = Math.max(i, sum + i);
+    for (const num of a) {
+      sum = Math.max(num, sum + num);
       maxSum = Math.max(maxSum, sum);
     }
     return maxSum;
   }
 
-  /**[17]*/
-  longestSubarrayWithKSum(nums: number[], k: number): number {
-    const map = new Map<number, number>();
+  /**[15]*/
+  static largestSubarrayWithSumK(nums: number[], k: number): number[] {
+    const map: Map<number, number> = new Map();
+    const n = nums.length;
     let maxLength = 0;
+    let start = 0;
     let sum = 0;
 
-    for (let i = 0; i < nums.length; i++) {
+    for (let i = 0; i < n; i++) {
       sum += nums[i];
+      const remaining = sum - k;
 
-      if (sum === k) {
+      if (!remaining) {
         maxLength = i + 1;
-      } else if (map.has(sum - k)) {
-        maxLength = Math.max(maxLength, i - map.get(sum - k)!);
+        start = 0;
       }
-
+      if (map.has(remaining)) {
+        const newLength = i - map.get(remaining)!;
+        if (maxLength < newLength) {
+          maxLength = newLength;
+          start = map.get(remaining)! + 1;
+        }
+      }
       if (!map.has(sum)) map.set(sum, i);
     }
-
-    return maxLength;
+    return nums.slice(start, start + maxLength);
   }
 
-  /**[18]*/
-
+  /**[16]*/
   static LongestAlternatingEvenOddSubArray(a: number[]): number {
     if (a.length === 0) return 0;
     let count = 1;
@@ -257,7 +246,7 @@ export class ArraysEasy {
     return result;
   }
 
-  /**[19]*/
+  /**[17]*/
   static minConsecutiveMoves(nums: number[]): number {
     if (nums.length === 0) return Infinity;
 
@@ -272,7 +261,7 @@ export class ArraysEasy {
     return min;
   }
 
-  /**[20]*/
+  /**[18]*/
   static minConsecutiveOnes(nums: number[], k: number): number {
     let maxConsecutiveOnes = 0;
     let left = 0;
@@ -292,5 +281,108 @@ export class ArraysEasy {
     }
 
     return maxConsecutiveOnes;
+  }
+  /**[19]*/
+  static span(arr: number[]): number {
+    let max = arr[0];
+    let min = arr[0];
+    for (let i = 0; i < arr.length; i++) {
+      max = Math.max(max, arr[i]);
+      min = Math.min(min, arr[i]);
+    }
+    return max - min;
+  }
+  /**[20]*/
+  static maxProfit(prices: number[]): number {
+    if (prices.length === 0) return 0;
+
+    let minPrice = prices[0];
+    let maxProfit = 0;
+    for (let i = 1; i < prices.length; i++) {
+      minPrice = Math.min(minPrice, prices[i]);
+      maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+    }
+    return maxProfit;
+  }
+  /**[21]*/
+  static maxProfit2(prices: number[]): number {
+    let maxProfit = 0;
+
+    for (let i = 1; i < prices.length; i++) {
+      if (prices[i] > prices[i - 1]) {
+        maxProfit += prices[i] - prices[i - 1];
+      }
+    }
+    return maxProfit;
+  }
+  /**[22]*/
+  static jumpGame(nums: number[]): boolean {
+    let goal = nums.length - 1;
+    for (let i = nums.length - 2; i >= 0; i--)
+      if (i + nums[i] >= goal) goal = i;
+    return goal === 0;
+  }
+  /**[23]*/
+  static jumpGame2(nums: number[]): number {
+    if (nums.length <= 1) return 0;
+    let jumps = 0;
+    for (
+      let [l, r, farthest] = [0, 0, 0];
+      r < nums.length - 1;
+      [l, r] = [r + 1, farthest]
+    ) {
+      for (let i = l; i < r + 1; i++)
+        farthest = Math.max(i + nums[i], farthest);
+      jumps++;
+    }
+    return jumps;
+  }
+
+  /**[24]*/
+  static moveZeroes(nums: number[]): void {
+    let l = 0;
+    for (let r = 0; r < nums.length; r++) {
+      if (nums[r] !== 0) {
+        [nums[r], nums[l]] = [nums[l], nums[r]];
+        l++;
+      }
+    }
+  }
+  /**[25]*/
+  static removeNotValElements(nums: number[], val: number): number {
+    let l = 0;
+    for (let r = 0; r < nums.length; r++) {
+      if (nums[r] !== val) {
+        nums[l] = nums[r];
+        l++;
+      }
+    }
+    return l;
+  }
+  /**[26]*/
+  static moveToLeftAsUniques(nums: number[]): number {
+    if (nums.length === 0) return 0;
+
+    let l = 1;
+    for (let r = 1; r < nums.length; r++) {
+      if (nums[r] !== nums[r - 1]) {
+        nums[l] = nums[r];
+        l++;
+      }
+    }
+    return l;
+  }
+  /**[27]*/
+  static moveToLeftAsPairs(nums: number[]): number {
+    if (nums.length <= 2) return nums.length;
+
+    let l = 2;
+    for (let r = 2; r < nums.length; r++) {
+      if (nums[r] !== nums[l - 1] || nums[r] !== nums[l - 2]) {
+        nums[l] = nums[r];
+        l++;
+      }
+    }
+    return l;
   }
 }

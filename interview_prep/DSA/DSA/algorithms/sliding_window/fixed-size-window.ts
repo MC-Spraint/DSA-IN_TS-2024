@@ -40,20 +40,20 @@ export class FixedSizeWindow {
   //When windows element needs to be tracked
   static minConsecutiveOnesToFlip0s(nums: number[], k: number): number {
     let maxConsecutiveOnes = 0;
-    let left = 0;
+    let l = 0;
     let zerosCount = 0;
 
-    for (let right = 0; right < nums.length; right++) {
-      if (nums[right] === 0) {
+    for (let r = 0; r < nums.length; r++) {
+      if (nums[r] === 0) {
         zerosCount++;
       }
       while (zerosCount > k) {
-        if (nums[left] === 0) {
+        if (nums[l] === 0) {
           zerosCount--;
         }
-        left++;
+        l++;
       }
-      maxConsecutiveOnes = Math.max(maxConsecutiveOnes, right - left + 1);
+      maxConsecutiveOnes = Math.max(maxConsecutiveOnes, r - l + 1);
     }
 
     return maxConsecutiveOnes;

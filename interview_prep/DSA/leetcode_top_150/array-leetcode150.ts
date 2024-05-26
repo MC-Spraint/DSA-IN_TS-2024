@@ -11,6 +11,7 @@ export class ArrayLeetcode150 {
     }
     return majorityElement;
   }
+  
   static candy(ratings: number[]) {
     const n = ratings.length;
     const candies = new Array(n).fill(1);
@@ -48,6 +49,7 @@ export class ArrayLeetcode150 {
     }
     return jumps;
   }
+
   static maxProfit(prices: number[]): number {
     if (prices.length === 0) return 0;
 

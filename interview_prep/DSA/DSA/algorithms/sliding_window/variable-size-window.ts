@@ -66,16 +66,18 @@ export class VariableSizeWindow {
       if (sum === k) {
         maxLength = i + 1;
         start = 0;
-      } else if (map.has(sum - k)) {
-        if (maxLength < i - map.get(sum - k)!) {
-          maxLength = i - map.get(sum - k)!;
-          start = map.get(sum - k)! + 1;
+      } else {
+        const remaining = sum - k;
+        if (map.has(remaining)) {
+          const newLength = i - map.get(remaining)!;
+          if (maxLength < newLength) {
+            maxLength = newLength;
+            start = map.get(remaining)! + 1;
+          }
         }
       }
-
       if (!map.has(sum)) map.set(sum, i);
     }
-
     return nums.slice(start, start + maxLength);
   }
 
