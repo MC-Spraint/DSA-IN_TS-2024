@@ -108,7 +108,8 @@ In short, a REPL (Read-Eval-Print Loop) is an interactive programming environmen
 
 #### [21] Why NodeJs Single-threated
 
-Node.js is single-threaded because it follows an event-driven architecture based on JavaScript's event loop. This design allows Node.js to handle asynchronous I/O operations efficiently and scale well with concurrent requests while maintaining simplicity and performance.
+Node.js is single-threaded because it follows an event-driven architecture based on JavaScript's event loop. 
+This event-driven architechture allows Node.js to handle asynchronous I/O operations efficiently and scale well with concurrent requests while maintaining simplicity and performance.
 
 #### [22] Event-Emitter
 
