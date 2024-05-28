@@ -143,3 +143,8 @@ SELECT * FROM students ORDER BY grade ASC, age DESC;
 ### [20] What is the difference between CASCADE and SET NULL in foreign key constraints?
 
 CASCADE automatically deletes or updates related rows in child tables when a parent row is deleted or updated, while SET NULL sets the foreign key columns in child tables to NULL when the corresponding parent row is deleted or updated.
+
+
+
+
+

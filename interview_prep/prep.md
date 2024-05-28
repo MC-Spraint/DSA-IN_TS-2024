@@ -1,3 +1,168 @@
+## **[Behavioral Pattern]**
+
+#### [1] State Pattern
+State pattern allows an object to alter its behaviour when its internal state changes.
+
+#### [2] Observer Pattern
+In Observer Pattern, an object known as observable maintains a list of its dependents, called observers, and notifies them of any state change, usually by calling one of their methods.
+
+#### [3] Strategic Pattern
+Strategic Pattern allows us to define multiple algorithm to perform a specific task and select one from them depending on the situation or context. It encapsulates each algorithm and makes them interchangeable.
+
+#### [4] Chain Of Responsiblity Pattern
+Chain Of Responsiblity Pattern allows multiple objects to handle a request without the sender needing to know which object will process it ultimately
+
+#### [5] Template Pattern
+When a number of classes need to follow some specific number of steps to perform an operation but allows each step to have its own logic in that specific step.
+
+#### [6] Interpreter Pattern
+Interpreter Pattern defines a context to interpret or evaluate an expression.
+
+#### [7] Command Pattern
+Command Pattern turns request commands into objects, allowing us to either parameterize or queue them.
+This helps in decoupling the request sender and the receiver
+
+#### [8] Iterator Pattern
+That provide a way to access elements of a collection sequencially without exposing the underlying
+representation of the collection.
+
+#### [9] Visitor Pattern
+Visitor Pattern allows adding operations to existing classes without changing them, encouraging open/close principal of SOLID.
+
+#### [10] Mediator Pattern
+Mediator Pattern encourages loose coupling by keeping two objects to refer each other through a mediator object.
+
+#### [11] Memento Pattern
+___
+
+## **[Structural Pattern]**
+#### [1] Decorator Pattern
+The Decorator pattern is a structural design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
+
+#### [2] Proxy Pattern
+The Proxy pattern provides a surrogate or placeholder for another object to control access to it. It acts as an intermediary between the client and the target object, providing additional functionality such as lazy initialization, access control, logging, etc.
+
+#### [3] Composite Pattern
+The Composite pattern is used when you need to treat individual objects and compositions of objects uniformly. It allows you to compose objects into tree structures to represent part-whole hierarchies.
+
+#### [4] Adapter pattern
+The Adapter pattern allows incompatible interfaces to work together. It wraps an existing class with a new interface so that it becomes compatible with another class.
+
+#### [5] Bridge Pattern
+The Bridge pattern decouples abstraction from implementation so that they can vary independently. It uses composition instead of inheritance to achieve this.
+
+#### [6] Facade Pattern
+The Facade pattern provides a unified interface to a set of interfaces in a subsystem. It simplifies complex systems by providing a higher-level interface.
+
+#### [7] Flyweight Pattern
+The Flyweight pattern is used to minimize memory usage or computational expenses by sharing as much as possible with similar objects.
+___
+
+## **[S.O.L.I.D Principles]**
+
+#### [1] Single Responsibility
+The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility or job.
+
+#### [2] Open/Closed Principle (OCP)
+The Open/Closed Principle (OCP) suggests that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means that new functionality should be added through extension rather than by altering existing code.
+
+#### [3] Liskov Substitution Principle (LSP)
+The Liskov Substitution Principle (LSP) asserts that objects of a superclass should be replaceable with objects of a subclass, without affecting the correctness of the program.
+
+#### [4] Interface Segregation Principle (ISP)
+The Interface Segregation Principle (ISP) advises that clients should not be forced to depend on interfaces they do not use. Instead, interfaces should be segregated based on the behavior they define.
+
+#### [5] Dependency Inversion Principle (DIP)
+The Dependency Inversion Principle (DIP) advocates for high-level modules not to depend on low-level modules. Both should depend on abstractions, and abstractions should not depend on details.
+
+
+## Javascript 20 Important Questions
+### [1] IIFE(Immediately Invoked Function Expression):
+
+An Immediately Invoked Function Expression (IIFE) is a JavaScript function that is defined and executed immediately after its creation. It is a way to encapsulate code within a function to avoid polluting the global scope.
+
+### [2] Promise Chaining:
+
+Promise chaining is a technique in JavaScript that involves chaining multiple promises together to **handle a sequence of asynchronous operations** in a more readable and organized manner. It is a way to express a series of asynchronous tasks one after the other, making the code easier to understand and maintain.
+
+### [3] Closure:
+
+ A closure is formed when a function is defined within another function, allowing the inner function to access the outer function's variables and parameters, even after the outer function has finished executing.
+ it is a fundamental concept in programming, particularly in languages that support first-class functions or function values.
+
+### [4] Currying:
+
+The term "currying" refers to a process in functional programming where a function is transformed into a sequence of functions, each taking a single argument. In other words, a curried function is a function that returns another function with one or more arguments "pre-filled."
+Instead of taking all arguments at once, a curried function takes one argument at a time and returns a new function that takes the next argument, and so on, until all arguments are consumed and the final result is produced.
+
+### [5] Hoisting:
+
+Hoisting is a JavaScript behavior in which variable and function declarations are moved to the top of their containing scope during the compilation phase, before code execution begins. This means that variables and functions can be referenced before they are declared in the code. It's important to note that only declarations are hoisted, not initializations.
+
+
+### [6] Higher-order Functions
+
+Higher-order functions are functions that take other functions as arguments or return functions as results. They enable functional programming paradigms such as function composition, currying, and callback-based asynchronous programming.
+
+### [7] What are the differences between let, var, and const?
+
+1. var: var is function-scoped and can be re-declared and updated throughout the function.
+2. let: let is block-scoped, can be updated but not re-declared in the same scope.
+3. const: const is block-scoped, cannot be updated or re-declared once initialized.
+
+### [8] Event Delegation
+Event delegation is a technique in which a single event listener is attached to a parent element to handle events for multiple child elements. It improves performance and reduces memory consumption by avoiding the need to attach event listeners to each individual element.
+
+
+### [9] Explain call, apply, and bind!
+call: The call method allows you to call a function 
+with a specified this value and arguments provided individually.
+
+apply: Similar to call, the apply method allows you to call a function
+with a specified this value and an array of arguments.
+
+bind: The bind method creates a new function 
+with a specified this value, without calling the original function immediately.
+
+Bind is particularly useful for creating a new function 
+with a fixed this value, which can be called later.
+#### Example:
+````Typescript
+function greet() {
+  return "Hello, " + this.name + "!";
+}
+
+const person = { name: "Alice" };
+const greetWithCall = greet.call(person);
+const greetWithApply = greet.apply(person);
+const greetWithBind = greet.bind(person);
+console.log(greetWithCall()); // Output: Hello, Alice!
+console.log(greetWithApply()); // Output: Hello, Alice!
+console.log(greetWithBind()); // Output: Hello, Alice!
+````
+### [10] Generators:
+
+Answer: Generators are functions that can be exited and later re-entered, with their context (variable bindings) saved across re-entrances. Generators are particularly useful for managing asynchronous programming in a more synchronous fashion, especially before async/await was introduced.
+
+#### Example: 
+````javascript
+function* idGenerator() 
+{
+     let id = 1; 
+     while (true)  yield id++; 
+} 
+const gen = idGenerator(); 
+// "Generator { }" console.log(gen.next().value); 
+// 1 console.log(gen.next().value); 
+// 2 console.log(gen.next().value);
+
+````
+
+
+
+
+
+
 ## NodeJs 30 Conceptual Questions
 
 #### [1] Worker Threads
@@ -153,9 +318,34 @@ Stubs are simplified versions of real dependencies used in testing to simulate t
 
 In Node.js, the assert module is a built-in module that provides a set of assertion functions for writing tests. These assertion functions help developers verify that certain conditions hold true during the execution of their code. The assert module is particularly useful when writing unit tests to ensure that functions and components behave as expected under various conditions.
 
+
+
 #### [31] How NodeJs becomes asynchronous
 
 Even though Node.js is single-threaded, it operates on a non-blocking I/O and event-driven architecture, allowing code to execute asynchronously. Asynchronous functions return promises, which represent eventual success or failure of the program. Node.js assigns callbacks to these functions instead of waiting for their completion before proceeding to the next, thus contributing to its non-blocking nature.
 
 When this functions complete, they get popped out of the call stack, and their corresponding events are pushed into the event queue sequentially. This asynchronous nature of Node.js is powered by its 'Event Loop', which also acts as the heart of Node.js, is responsible for managing these events.
 After pushing these events into the event queue, the Event Loop processes them one by one as they come out the other end in a FIFO pattern and it constantly checks the queue to see if any events are still waiting to be processed. If there are, it takes each event one by one and processes them, thus making Node.js asynchronous.
+
+## [32] Asynchronous Programming
+
+Asynchronous programming allows operations to occur independently of the main application thread. This means the program can initiate an operation and move on to another one before the previous one finishes. This is known as non-blocking execution because the initiation of one operation does not block the execution of subsequent operations.
+
+## [33] Synchronous Programming
+
+Synchronous programming is straightforward: operations execute sequentially one after another, meaning that each operation must complete before the next one can begin. This is known as blocking execution because each step blocks the next one from starting until it is finished.
+
+## [34] Single Threaded Applications
+
+Single-threaded applications have only one sequence of instructions (thread) executing at any given time.
+They can perform only one task at a time, and all operations are executed sequentially.
+If one operation takes a long time (e.g., reading data from a slow disk), it can block the entire application until it completes.
+They are simpler to design and reason about because there is no need to manage concurrent access to shared resources.
+
+## [35] Multi-treaded Applications
+
+Multi-threaded applications can execute multiple threads concurrently.
+Each thread can perform its own tasks independently of others, potentially speeding up overall performance by taking advantage of multiple CPU cores.
+Threads can share resources and communicate with each other, but this introduces complexities such as the need for synchronization to prevent data corruption or race conditions.
+They can improve responsiveness in applications by allowing tasks to be performed in the background while the main thread handles user interaction.
+They require careful design and management to avoid issues like deadlock, livelock, and race conditions.

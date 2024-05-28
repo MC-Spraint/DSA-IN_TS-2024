@@ -41,7 +41,7 @@ export class ArraysEasy {
       count = 1;
     for (let i = 1; i < a.length; i++) {
       count += a[i] === majorityElement ? 1 : -1;
-      if (count === 0) [count, majorityElement] = [1, a[i]];
+      if (count < 1) [count, majorityElement] = [1, a[i]];
     }
     return majorityElement;
   }

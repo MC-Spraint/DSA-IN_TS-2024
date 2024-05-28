@@ -18,6 +18,8 @@ export class BannersService {
     return banners;
   }
   public createBanner(newBanner: Banner): Banner | { error: string } {
+    
+
     const banners = this.getBanners();
     const maxId = banners.reduce(
       (max, banner) => (banner.id > max ? banner.id : max),
