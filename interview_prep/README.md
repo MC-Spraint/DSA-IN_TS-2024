@@ -1,3 +1,463 @@
+
+## **[Behavioral Patterns]**
+
+### **<span style="color: maroon;">1. State Pattern</span>**
+State pattern allows an object to alter its behaviour when its internal state changes.
+
+@startuml
+scale 0.8
+interface SwitchState {
+  + switchOn(): void
+  + switchOff(): void
+}
+
+class ConcreteOnState implements SwitchState {
+  + switchOn(): void
+  + switchOff(): void
+}
+
+class ConcreteOffState implements SwitchState {
+  + switchOn(): void
+  + switchOff(): void
+}
+
+class SwitchContext {
+  - state: SwitchState
+  + setState(state: SwitchState): void
+  + switchOn(): void
+  + switchOff(): void
+}
+
+SwitchState <|-- ConcreteOnState : is-a >>
+SwitchState <|-- ConcreteOffState : is-a >>
+SwitchContext -right-> SwitchState : has-a >>
+@enduml
+
+
+
+### **<span style="color: maroon;">2. Observer Pattern</span>**
+In **<u>Observer Pattern</u>**, an object known as **observable** maintains a list of its dependents, called **observers**, and notifies them of any state change, usually by calling one of their methods.
+
+@startuml
+scale 0.8
+interface Observer {
+  + update(message: string): void
+}
+
+class Subject {
+  - observers: Observer[]
+  + addObserver(observer: Observer): void
+  + removeObserver(observer: Observer): void
+  + notifyObservers(message: string): void
+}
+
+class ConcreteObserverA {
+  + update(message: string): void
+}
+
+class ConcreteObserverB {
+  + update(message: string): void
+}
+
+Observer <|.. ConcreteObserverA : is-a >>
+Observer <|.. ConcreteObserverB : is-a >>
+
+Subject -right-> Observer : has-a >>
+@enduml
+
+
+<!-- <div style="page-break-after: always;"></div> -->
+
+### **<span style="color: maroon;">3. Strategy Pattern</span>**
+**<u>Strategy Pattern</u>** allows us to define multiple algorithms to perform a specific task and select one depending on the situation or context. It encapsulates each algorithm and makes them interchangeable.
+
+@startuml
+scale 0.8
+interface PaymentStrategy {
+  + pay(amount: number): void
+}
+
+class CreditCardPayment {
+  + pay(amount: number): void
+}
+
+class PayPalPayment {
+  + pay(amount: number): void
+}
+
+class BankTransferPayment {
+  + pay(amount: number): void
+}
+
+class PaymentContext {
+  - paymentStrategy: PaymentStrategy
+  + PaymentContext(paymentStrategy: PaymentStrategy)
+  + setPaymentStrategy(paymentStrategy: PaymentStrategy): void
+  + executePayment(amount: number): void
+}
+
+PaymentStrategy <|.. CreditCardPayment : is-a >> 
+PaymentStrategy <|.. PayPalPayment : is-a >> 
+PaymentStrategy <|.. BankTransferPayment : is-a >> 
+PaymentContext "1" *-right-> "1" PaymentStrategy : has-a >>
+@enduml
+
+<!-- <div style="page-break-after: always;"></div> -->
+
+### **<span style="color: maroon;">4. Chain of Responsibility Pattern</span>**
+**<u>Chain of Responsibility Pattern</u>** allows multiple objects to handle a request without the sender needing to know which object will process it ultimately.
+
+@startuml
+scale 0.8
+
+interface Handler {
+  + setNext(handler: Handler): Handler
+  + handle(request: string): string | null
+}
+
+abstract class AbstractHandler {
+  - nextHandler: Handler
+  + setNext(handler: Handler): Handler
+  + handle(request: string): string | null
+}
+
+class ConcreteHandler1 {
+  + handle(request: string): string | null
+}
+
+class ConcreteHandler2 {
+  + handle(request: string): string | null
+}
+
+class ConcreteHandler3 {
+  + handle(request: string): string | null
+}
+
+Handler <|.. AbstractHandler : is-a >>
+AbstractHandler <|-- ConcreteHandler1 : extends >>
+AbstractHandler <|-- ConcreteHandler2 : extends >>
+AbstractHandler <|-- ConcreteHandler3 : extends >>
+@enduml
+
+
+
+
+### **<span style="color: maroon;">5. Template Pattern</span>**
+The **<u>Template Pattern</u>** ensures that a number of classes follow specific steps to perform an operation but allows each step to have its own logic in that specific step.
+
+@startuml
+scale 0.8
+
+abstract class AbstractClass {
+  {abstract} +requiredOperation1(): void
+  {abstract} +requiredOperation2(): void
+  #baseOperation1(): void
+  #baseOperation2(): void
+  #baseOperation3(): void
+  #hook1(): void
+  #hook2(): void
+  +templateMethod(): void
+}
+
+class ConcreteClass {
+  +requiredOperation1(): void
+  +requiredOperation2(): void
+  +hook1(): void
+}
+
+AbstractClass <|-left- ConcreteClass
+@enduml
+
+
+
+### **<span style="color: maroon;">6. Interpreter Pattern</span>**
+**<u>Interpreter Pattern</u>** defines a context to interpret or evaluate an expression.
+
+@startuml
+scale 0.95
+
+interface Expression {
+  + interpret(context: Context): number
+}
+
+class NumberExpression {
+  - number: number
+  + interpret(context: Context): number
+}
+
+class VariableExpression {
+  - name: string
+  + interpret(context: Context): number
+}
+
+class AddExpression {
+  - left: Expression
+  - right: Expression
+  + interpret(context: Context): number
+}
+
+class SubtractExpression {
+  - left: Expression
+  - right: Expression
+  + interpret(context: Context): number
+}
+
+class Context {
+  - variables: Map<string, number>
+  + setVariable(name: string, value: number): void
+  + lookup(name: string): number
+}
+
+Expression <|.. NumberExpression
+Expression <|.. VariableExpression
+Expression <|.. AddExpression
+Expression <|.. SubtractExpression
+AddExpression --> Expression : left, right
+SubtractExpression --> Expression : left, right
+
+Context --> VariableExpression : uses
+
+@enduml
+
+
+<div style="page-break-after: always;"></div>
+
+### **<span style="color: maroon;">7. Command Pattern</span>**
+**<u>Command Pattern</u>** turns request commands into objects, allowing us to either parameterize or queue them. This helps in decoupling the request sender and the receiver.
+
+@startuml
+scale 0.8
+
+interface Command {
+  + execute(): void
+  + undo(): void
+}
+
+class LightOnCommand implements Command {
+  - light: Light
+  + execute(): void
+  + undo(): void
+}
+
+class LightOffCommand implements Command {
+  - light: Light
+  + execute(): void
+  + undo(): void
+}
+
+class Light {
+  + on(): void
+  + off(): void
+}
+
+class RemoteControl {
+  - command: Command
+  + setCommand(command: Command): void
+  + pressButton(): void
+  + pressUndo(): void
+}
+
+Command <-- LightOnCommand : is-a >>
+Command <-- LightOffCommand : is-a >>
+LightOnCommand --> Light : has-a >>
+LightOffCommand --> Light : has-a >>
+RemoteControl -right-> Command : has-a >>
+@enduml
+
+
+
+### **<span style="color: maroon;">8. Iterator Pattern</span>**
+**<u>Iterator Pattern</u>** provides a way to access elements of a collection sequentially without exposing the underlying representation of the collection.
+
+@startuml
+scale 0.6
+
+interface Iterator<T> {
+  + hasNext(): boolean
+  + next(): IteratorResult<T>
+}
+
+interface Aggregate<T> {
+  + createIterator(): Iterator<T>
+}
+
+class ArrayIterator<T> {
+  - index: number
+  - collection: T[]
+  + hasNext(): boolean
+  + next(): IteratorResult<T>
+}
+
+class ArrayCollection<T> {
+  - collection: T[]
+  + createIterator(): Iterator<T>
+}
+
+interface IteratorResult<T> {
+  + done: boolean
+  + value: T
+}
+
+Iterator <|.. ArrayIterator
+Aggregate <|.. ArrayCollection
+ArrayCollection -right-> Iterator : creates
+ArrayIterator -right-> Aggregate : uses
+@enduml
+
+<div style="page-break-after: always;"></div>
+
+
+### **<span style="color: maroon;">9. Visitor Pattern</span>**
+**<u>Visitor Pattern</u>** allows adding operations to existing classes without changing them, encouraging the open/close principle of SOLID.
+
+@startuml
+scale 0.8
+interface Visitor {
+    + visitConcreteElementA(ConcreteElementA)
+    + visitConcreteElementB(ConcreteElementB)
+}
+
+class ConcreteVisitor1 implements Visitor {
+    + visitConcreteElementA(ConcreteElementA)
+    + visitConcreteElementB(ConcreteElementB)
+}
+
+class ConcreteVisitor2 implements Visitor {
+    + visitConcreteElementA(ConcreteElementA)
+    + visitConcreteElementB(ConcreteElementB)
+}
+
+interface Element {
+    + accept(Visitor)
+}
+
+class ConcreteElementA implements Element {
+    + accept(Visitor)
+}
+
+class ConcreteElementB implements Element {
+    + accept(Visitor)
+}
+
+Visitor <|.. ConcreteVisitor1
+Visitor <|.. ConcreteVisitor2
+Element <|.. ConcreteElementA
+Element <|.. ConcreteElementB
+ConcreteElementA o-- Visitor
+ConcreteElementB o-- Visitor
+@enduml
+
+
+### **<span style="color: maroon;">10. Mediator Pattern</span>**
+**<u>Mediator Pattern</u>** encourages loose coupling by keeping two objects from referencing each other through a mediator object.
+
+@startuml
+scale 0.8
+interface Mediator {
+  + notify(sender: Colleague, event: string): void
+}
+
+interface Colleague {
+  + setMediator(mediator: Mediator): void
+  + send(event: string): void
+  + receive(event: string): void
+}
+
+class ConcreteMediator {
+  - colleagues: Colleague[]
+  + addColleague(colleague: Colleague): void
+  + notify(sender: Colleague, event: string): void
+}
+
+class ConcreteColleague {
+  - mediator: Mediator
+  + setMediator(mediator: Mediator): void
+  + send(event: string): void
+  + receive(event: string): void
+}
+ConcreteMediator .right.> Mediator
+ConcreteMediator <-- Colleague
+ConcreteColleague ..> Mediator
+ConcreteColleague <-- Colleague
+@enduml
+
+<div style="page-break-after: always;"></div>
+
+
+### **<span style="color: maroon;">11. Memento Pattern</span>**
+**<u>Memento Pattern</u>** provides the ability to revert an object to its previous
+
+@startuml
+scale 0.8
+class Originator {
+  - state: string
+  + setState(state: string): void
+  + getState(): string
+  + saveToMemento(): Memento
+  + restoreFromMemento(memento: Memento): void
+}
+
+class Memento {
+  - state: string
+  + getState(): string
+}
+
+class Caretaker {
+  - mementos: Memento[]
+  + addMemento(memento: Memento): void
+  + getMemento(index: number): Memento
+}
+
+Originator --> Memento : creates >
+Originator --> Caretaker : uses >
+Caretaker --> Memento : stores >
+@enduml
+
+## **[S.O.L.I.D Principles]**
+
+#### [1] Single Responsibility
+The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility or job.
+
+#### [2] Open/Closed Principle (OCP)
+The Open/Closed Principle (OCP) suggests that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means that new functionality should be added through extension rather than by altering existing code.
+
+#### [3] Liskov Substitution Principle (LSP)
+The Liskov Substitution Principle (LSP) asserts that objects of a superclass should be replaceable with objects of a subclass, without affecting the correctness of the program.
+
+#### [4] Interface Segregation Principle (ISP)
+The Interface Segregation Principle (ISP) advises that clients should not be forced to depend on interfaces they do not use. Instead, interfaces should be segregated based on the behavior they define.
+
+#### [5] Dependency Inversion Principle (DIP)
+The Dependency Inversion Principle (DIP) advocates for high-level modules not to depend on low-level modules. Both should depend on abstractions, and abstractions should not depend on details.
+<div style="page-break-after: always;"></div>
+
+
+## **[Structural Pattern]**
+
+#### [1] Decorator Pattern
+The Decorator pattern is a structural design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
+
+#### [2] Proxy Pattern
+The Proxy pattern provides a surrogate or placeholder for another object to control access to it. It acts as an intermediary between the client and the target object, providing additional functionality such as lazy initialization, access control, logging, etc.
+
+#### [3] Composite Pattern
+The Composite pattern is used when you need to treat individual objects and compositions of objects uniformly. It allows you to compose objects into tree structures to represent part-whole hierarchies.
+
+#### [4] Adapter pattern
+The Adapter pattern allows incompatible interfaces to work together. It wraps an existing class with a new interface so that it becomes compatible with another class.
+
+#### [5] Bridge Pattern
+The Bridge pattern decouples abstraction from implementation so that they can vary independently. It uses composition instead of inheritance to achieve this.
+
+#### [6] Facade Pattern
+The Facade pattern provides a unified interface to a set of interfaces in a subsystem. It simplifies complex systems by providing a higher-level interface.
+
+#### [7] Flyweight Pattern
+The Flyweight pattern is used to minimize memory usage or computational expenses by sharing as much as possible with similar objects.
+
+<div style="page-break-after: always;"></div>
+
+
 ## **[Behavioral Pattern]**
 
 #### [1] State Pattern
@@ -30,91 +490,57 @@ representation of the collection.
 Visitor Pattern allows adding operations to existing classes without changing them, encouraging open/close principal of SOLID.
 
 #### [10] Mediator Pattern
-Mediator Pattern encourages loose coupling by keeping two objects to refer each other through a mediator object.
+Mediator Pattern encourages loose coupling by keeping two objects from referencing each other through a mediator object.
 
 #### [11] Memento Pattern
-___
+Memento Pattern provides an ability to revert abn object to its previous state
+without exposing the object's internal implementation
 
-## **[Structural Pattern]**
-#### [1] Decorator Pattern
-The Decorator pattern is a structural design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
+<div style="page-break-after: always;"></div>
 
-#### [2] Proxy Pattern
-The Proxy pattern provides a surrogate or placeholder for another object to control access to it. It acts as an intermediary between the client and the target object, providing additional functionality such as lazy initialization, access control, logging, etc.
+_____
 
-#### [3] Composite Pattern
-The Composite pattern is used when you need to treat individual objects and compositions of objects uniformly. It allows you to compose objects into tree structures to represent part-whole hierarchies.
+## **[Javasceipt Interview Questions]**
+____
 
-#### [4] Adapter pattern
-The Adapter pattern allows incompatible interfaces to work together. It wraps an existing class with a new interface so that it becomes compatible with another class.
-
-#### [5] Bridge Pattern
-The Bridge pattern decouples abstraction from implementation so that they can vary independently. It uses composition instead of inheritance to achieve this.
-
-#### [6] Facade Pattern
-The Facade pattern provides a unified interface to a set of interfaces in a subsystem. It simplifies complex systems by providing a higher-level interface.
-
-#### [7] Flyweight Pattern
-The Flyweight pattern is used to minimize memory usage or computational expenses by sharing as much as possible with similar objects.
-___
-
-## **[S.O.L.I.D Principles]**
-
-#### [1] Single Responsibility
-The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility or job.
-
-#### [2] Open/Closed Principle (OCP)
-The Open/Closed Principle (OCP) suggests that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means that new functionality should be added through extension rather than by altering existing code.
-
-#### [3] Liskov Substitution Principle (LSP)
-The Liskov Substitution Principle (LSP) asserts that objects of a superclass should be replaceable with objects of a subclass, without affecting the correctness of the program.
-
-#### [4] Interface Segregation Principle (ISP)
-The Interface Segregation Principle (ISP) advises that clients should not be forced to depend on interfaces they do not use. Instead, interfaces should be segregated based on the behavior they define.
-
-#### [5] Dependency Inversion Principle (DIP)
-The Dependency Inversion Principle (DIP) advocates for high-level modules not to depend on low-level modules. Both should depend on abstractions, and abstractions should not depend on details.
-
-
-## Javascript 20 Important Questions
-### [1] IIFE(Immediately Invoked Function Expression):
+#### [1] IIFE(Immediately Invoked Function Expression):
 
 An Immediately Invoked Function Expression (IIFE) is a JavaScript function that is defined and executed immediately after its creation. It is a way to encapsulate code within a function to avoid polluting the global scope.
 
-### [2] Promise Chaining:
+#### [2] Promise Chaining:
 
 Promise chaining is a technique in JavaScript that involves chaining multiple promises together to **handle a sequence of asynchronous operations** in a more readable and organized manner. It is a way to express a series of asynchronous tasks one after the other, making the code easier to understand and maintain.
 
-### [3] Closure:
+#### [3] Closure:
 
  A closure is formed when a function is defined within another function, allowing the inner function to access the outer function's variables and parameters, even after the outer function has finished executing.
  it is a fundamental concept in programming, particularly in languages that support first-class functions or function values.
 
-### [4] Currying:
+#### [4] Currying:
 
 The term "currying" refers to a process in functional programming where a function is transformed into a sequence of functions, each taking a single argument. In other words, a curried function is a function that returns another function with one or more arguments "pre-filled."
 Instead of taking all arguments at once, a curried function takes one argument at a time and returns a new function that takes the next argument, and so on, until all arguments are consumed and the final result is produced.
 
-### [5] Hoisting:
+#### [5] Hoisting:
 
 Hoisting is a JavaScript behavior in which variable and function declarations are moved to the top of their containing scope during the compilation phase, before code execution begins. This means that variables and functions can be referenced before they are declared in the code. It's important to note that only declarations are hoisted, not initializations.
 
 
-### [6] Higher-order Functions
+#### [6] Higher-order Functions
 
-Higher-order functions are functions that take other functions as arguments or return functions as results. They enable functional programming paradigms such as function composition, currying, and callback-based asynchronous programming.
+Higher-order functions are **functions that take other functions as arguments** or return functions as results. They enable functional programming paradigms such as function composition, currying, and callback-based asynchronous programming.
 
-### [7] What are the differences between let, var, and const?
+#### [7] What are the differences between let, var, and const?
 
-1. var: var is function-scoped and can be re-declared and updated throughout the function.
-2. let: let is block-scoped, can be updated but not re-declared in the same scope.
-3. const: const is block-scoped, cannot be updated or re-declared once initialized.
+1. **var**:   var is function-scoped and can be re-declared and updated throughout the function.
+2. **let**:   let is block-scoped, can be updated but not re-declared in the same scope.
+3. **const**: const is block-scoped, cannot be updated or re-declared once initialized.
 
-### [8] Event Delegation
-Event delegation is a technique in which a single event listener is attached to a parent element to handle events for multiple child elements. It improves performance and reduces memory consumption by avoiding the need to attach event listeners to each individual element.
+#### [8] Event Delegation
+Event delegation is a technique in which a **single event listener is attached to a parent element** to handle events for multiple child elements. It improves performance and reduces memory consumption by avoiding the need to attach event listeners to each individual element.
 
 
-### [9] Explain call, apply, and bind!
+#### [9] Explain call, apply, and bind!
 call: The call method allows you to call a function 
 with a specified this value and arguments provided individually.
 
@@ -126,6 +552,7 @@ with a specified this value, without calling the original function immediately.
 
 Bind is particularly useful for creating a new function 
 with a fixed this value, which can be called later.
+
 #### Example:
 ````Typescript
 function greet() {
@@ -141,7 +568,6 @@ console.log(greetWithApply()); // Output: Hello, Alice!
 console.log(greetWithBind()); // Output: Hello, Alice!
 ````
 ### [10] Generators:
-
 Answer: Generators are functions that can be exited and later re-entered, with their context (variable bindings) saved across re-entrances. Generators are particularly useful for managing asynchronous programming in a more synchronous fashion, especially before async/await was introduced.
 
 #### Example: 
