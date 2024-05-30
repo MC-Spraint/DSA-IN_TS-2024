@@ -17,3 +17,29 @@
 1. Kids with the Greatest Number of Candies
 2. Can Place Flowers
 3. Increasing Triplet Subsequence
+const express = require('express');
+const app = express();
+const PORT = 3000;
+app.use(express.json());
+app.get('', (req, res, next)=>{
+    const textMessage = "Hello World";
+    res.status(200).json(textMessage);
+})
+app.listen(port, ()=> {
+    console.log(`Server is running on port ${PORT}`)
+})
+// malayalam
+// m: 2
+// a: 4 
+// l: 2
+// y: 1
+function countChars(s) {
+    const map = new Map();
+    for (let char of s) {
+        map.set(char, (map.get(char) || 0) + 1);
+    }
+    const keys = [...map.keys()];
+    for(let key of keys){
+        console.log(`${key}: ${map.get(key)}`);
+
+
