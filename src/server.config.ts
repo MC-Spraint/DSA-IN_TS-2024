@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import path from "path";
 import { BaseRouter } from "./router";
 import { ConnectMongoDB } from "./core/config/databases/mongodb.config";
+import { ConnectPostgresql } from "./core/config/databases/postgres.config";
 // import passport from "passport";
-// import { ConnectPostgresql } from "./core/config/databases/postgres.config";
 
 export class ServerConfig {
   private readonly app: Express;
@@ -16,6 +16,7 @@ export class ServerConfig {
     this.app = express();
     this.PORT = process.env.PORT || 8000;
     this.configureApp();
+    this.connectDatabases();
   }
   private configureApp(): void {
     // this.app.use(passport.initialize());
@@ -27,8 +28,8 @@ export class ServerConfig {
   }
 
   private connectDatabases(): void {
-    ConnectMongoDB();
-    // ConnectPostgresql();
+    // ConnectMongoDB();
+    ConnectPostgresql();
   }
 
   public start(): void {
