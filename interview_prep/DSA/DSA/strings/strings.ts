@@ -102,8 +102,8 @@ export class Strings {
     return lastLine + " ".repeat(maxWidth - lastLine.length);
   }
   /**[7] */
-  static romanToInt(roman: string): number {
-    const romanNumerals = new Map([
+  static romanToInt(s: string): number {
+    const map = new Map<string, number>([
       ["I", 1],
       ["V", 5],
       ["X", 10],
@@ -113,22 +113,42 @@ export class Strings {
       ["M", 1000],
     ]);
 
-    let result = 0;
+    let n = map.get(s[0])!;
+    for (let i = 1; i < s.length; i++) {
+      const [curr, prev] = [map.get(s[i])!, map.get(s[i - 1])!];
 
-    for (let i = 0; i < roman.length; i++) {
-      const currentNumeral = romanNumerals.get(roman.charAt(i))!;
-      const nextNumeral = romanNumerals.get(roman.charAt(i + 1))!;
-
-      if (nextNumeral && nextNumeral > currentNumeral) {
-        result += nextNumeral - currentNumeral;
-        i++; // Skip the next numeral as it has been accounted for
-      } else {
-        result += currentNumeral;
-      }
+      if (curr <= prev) n += curr;
+      else n += curr - 2 * prev;
     }
-
-    return result;
+    return n;
   }
+  static romanToInt1(s: string): number {
+    const arr: [string, number][] = [
+      ["I", 1],
+      ["V", 5],
+      ["X", 10],
+      ["L", 50],
+      ["C", 100],
+      ["D", 500],
+      ["M", 1000],
+    ];
+
+    let n = this.getVal(s[0], arr)!;
+    for (let i = 1; i < s.length; i++) {
+      const [curr, prev] = [
+        this.getVal(s[i], arr)!,
+        this.getVal(s[i - 1], arr)!,
+      ];
+      if (curr <= prev) n += curr;
+      else n += curr - 2 * prev;
+    }
+    return n;
+  }
+  static getVal(char: string, arr: [string, number][]): number {
+    for (let a of arr) if (a[0] === char) return a[1];
+    return 0;
+  }
+
   /**[8] */
   static intToRoman(num: number) {
     const romanNumerals = new Map([
