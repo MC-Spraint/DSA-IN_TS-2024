@@ -1,22 +1,4 @@
 export class TwoPointers {
-  static maxArea(height: number[]): number {
-    let maxArea = 0;
-    let l = 0;
-    let r = height.length - 1;
-
-    while (l < r) {
-      const h = Math.min(height[l], height[r]);
-      const area = h * (r - l);
-      maxArea = Math.max(maxArea, area);
-      if (height[l] < height[r]) {
-        l++;
-      } else {
-        r--;
-      }
-      console.log(maxArea);
-    }
-    return maxArea;
-  }
   static threeSum(nums: number[], target: number): number[][] {
     nums.sort((a, b) => a - b);
     const result: number[][] = [];
@@ -43,6 +25,25 @@ export class TwoPointers {
 
     return result;
   }
+  static maxArea(height: number[]): number {
+    let maxArea = 0;
+    let l = 0;
+    let r = height.length - 1;
+
+    while (l < r) {
+      const h = Math.min(height[l], height[r]);
+      const area = h * (r - l);
+      maxArea = Math.max(maxArea, area);
+      if (height[l] < height[r]) {
+        l++;
+      } else {
+        r--;
+      }
+      console.log(maxArea);
+    }
+    return maxArea;
+  }
+
 
   static twoSum(numbers: number[], target: number): number[] {
     const sorted = numbers.sort((a, b) => a - b);
