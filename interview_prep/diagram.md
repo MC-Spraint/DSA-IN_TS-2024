@@ -27,9 +27,8 @@ class SwitchContext {
   + switchOff(): void
 }
 
-SwitchState <|-- ConcreteOnState : is-a >>
-SwitchState <|-- ConcreteOffState : is-a >>
-SwitchContext -right-> SwitchState : has-a >>
+
+SwitchContext -right-> SwitchState : has-a >
 @enduml
 
 
@@ -58,10 +57,10 @@ class ConcreteObserverB {
   + update(message: string): void
 }
 
-Observer <|.. ConcreteObserverA : is-a >>
-Observer <|.. ConcreteObserverB : is-a >>
+Observer <|.. ConcreteObserverA
+Observer <|.. ConcreteObserverB
 
-Subject -right-> Observer : has-a >>
+Subject -right-> Observer : has-a >
 @enduml
 
 
@@ -95,13 +94,13 @@ class PaymentContext {
   + executePayment(amount: number): void
 }
 
-PaymentStrategy <|.. CreditCardPayment : is-a >> 
-PaymentStrategy <|.. PayPalPayment : is-a >> 
-PaymentStrategy <|.. BankTransferPayment : is-a >> 
-PaymentContext "1" *-right-> "1" PaymentStrategy : has-a >>
+PaymentStrategy <|.. CreditCardPayment 
+PaymentStrategy <|.. PayPalPayment 
+PaymentStrategy <|.. BankTransferPayment 
+PaymentContext "1" *-right-> "1" PaymentStrategy : has-a >
 @enduml
 
-<!-- <div style="page-break-after: always;"></div> -->
+<div style="page-break-after: always;"></div>
 
 ### **<span style="color: maroon;">4. Chain of Responsibility Pattern</span>**
 **<u>Chain of Responsibility Pattern</u>** allows multiple objects to handle a request without the sender needing to know which object will process it ultimately.
@@ -132,10 +131,10 @@ class ConcreteHandler3 {
   + handle(request: string): string | null
 }
 
-Handler <|.. AbstractHandler : is-a >>
-AbstractHandler <|-- ConcreteHandler1 : extends >>
-AbstractHandler <|-- ConcreteHandler2 : extends >>
-AbstractHandler <|-- ConcreteHandler3 : extends >>
+Handler <|.. AbstractHandler
+AbstractHandler <|-- ConcreteHandler1 : extends >
+AbstractHandler <|-- ConcreteHandler2 : extends >
+AbstractHandler <|-- ConcreteHandler3 : extends >
 @enduml
 
 
@@ -173,29 +172,29 @@ AbstractClass <|-left- ConcreteClass
 **<u>Interpreter Pattern</u>** defines a context to interpret or evaluate an expression.
 
 @startuml
-scale 0.95
+scale 0.8
 
 interface Expression {
   + interpret(context: Context): number
 }
 
-class NumberExpression {
+class NumberExpression implements Expression{
   - number: number
   + interpret(context: Context): number
 }
 
-class VariableExpression {
+class VariableExpression  implements Expression{
   - name: string
   + interpret(context: Context): number
 }
 
-class AddExpression {
+class AddExpression  implements Expression{
   - left: Expression
   - right: Expression
   + interpret(context: Context): number
 }
 
-class SubtractExpression {
+class SubtractExpression  implements Expression{
   - left: Expression
   - right: Expression
   + interpret(context: Context): number
@@ -206,15 +205,10 @@ class Context {
   + setVariable(name: string, value: number): void
   + lookup(name: string): number
 }
-
-Expression <|.. NumberExpression
-Expression <|.. VariableExpression
-Expression <|.. AddExpression
-Expression <|.. SubtractExpression
-AddExpression --> Expression : left, right
-SubtractExpression --> Expression : left, right
-
-Context --> VariableExpression : uses
+NumberExpression -up-> Context : uses >
+VariableExpression -up-> Context : uses >
+AddExpression -up-> Context : uses >
+SubtractExpression -up-> Context : uses >
 
 @enduml
 
@@ -256,11 +250,10 @@ class RemoteControl {
   + pressUndo(): void
 }
 
-Command <-- LightOnCommand : is-a >>
-Command <-- LightOffCommand : is-a >>
-LightOnCommand --> Light : has-a >>
-LightOffCommand --> Light : has-a >>
-RemoteControl -right-> Command : has-a >>
+
+LightOnCommand --> Light : has-a >
+LightOffCommand --> Light : has-a >
+RemoteControl -right-> Command : has-a >
 @enduml
 
 
@@ -269,7 +262,7 @@ RemoteControl -right-> Command : has-a >>
 **<u>Iterator Pattern</u>** provides a way to access elements of a collection sequentially without exposing the underlying representation of the collection.
 
 @startuml
-scale 0.6
+scale 0.8
 
 interface Iterator<T> {
   + hasNext(): boolean
@@ -280,14 +273,14 @@ interface Aggregate<T> {
   + createIterator(): Iterator<T>
 }
 
-class ArrayIterator<T> {
+class ArrayIterator<T> implements Iterator<T> {
   - index: number
   - collection: T[]
   + hasNext(): boolean
   + next(): IteratorResult<T>
 }
 
-class ArrayCollection<T> {
+class ArrayCollection<T> implements Aggregate<T> {
   - collection: T[]
   + createIterator(): Iterator<T>
 }
@@ -296,11 +289,7 @@ interface IteratorResult<T> {
   + done: boolean
   + value: T
 }
-
-Iterator <|.. ArrayIterator
-Aggregate <|.. ArrayCollection
-ArrayCollection -right-> Iterator : creates
-ArrayIterator -right-> Aggregate : uses
+ArrayCollection -left-> ArrayIterator : creates >
 @enduml
 
 <div style="page-break-after: always;"></div>
@@ -326,24 +315,22 @@ class ConcreteVisitor2 implements Visitor {
     + visitConcreteElementB(ConcreteElementB)
 }
 
-interface Element {
+interface Visitable {
     + accept(Visitor)
 }
 
-class ConcreteElementA implements Element {
+class ConcreteElementA implements Visitable {
     + accept(Visitor)
 }
 
-class ConcreteElementB implements Element {
+class ConcreteElementB implements Visitable {
     + accept(Visitor)
 }
 
-Visitor <|.. ConcreteVisitor1
-Visitor <|.. ConcreteVisitor2
-Element <|.. ConcreteElementA
-Element <|.. ConcreteElementB
-ConcreteElementA o-- Visitor
-ConcreteElementB o-- Visitor
+ConcreteElementA --> Visitor : uses >
+ConcreteElementB --> Visitor : uses >
+
+
 @enduml
 
 
@@ -362,29 +349,27 @@ interface Colleague {
   + receive(event: string): void
 }
 
-class ConcreteMediator {
+class ConcreteMediator implements Mediator {
   - colleagues: Colleague[]
   + addColleague(colleague: Colleague): void
   + notify(sender: Colleague, event: string): void
 }
 
-class ConcreteColleague {
+class ConcreteColleague implements Colleague {
   - mediator: Mediator
   + setMediator(mediator: Mediator): void
   + send(event: string): void
   + receive(event: string): void
 }
-ConcreteMediator .right.> Mediator
-ConcreteMediator <-- Colleague
-ConcreteColleague ..> Mediator
-ConcreteColleague <-- Colleague
+ConcreteMediator -up-> Colleague : has-many + uses >
+ConcreteColleague -up-> Mediator : has-a + uses >
 @enduml
 
 <div style="page-break-after: always;"></div>
 
 
 ### **<span style="color: maroon;">11. Memento Pattern</span>**
-**<u>Memento Pattern</u>** provides the ability to revert an object to its previous
+**<u>Memento Pattern</u>** provides the ability to revert an object to its previous state.
 
 @startuml
 scale 0.8
@@ -409,5 +394,5 @@ class Caretaker {
 
 Originator --> Memento : creates >
 Originator --> Caretaker : uses >
-Caretaker --> Memento : stores >
+Caretaker -right-> Memento : has-many + uses >
 @enduml

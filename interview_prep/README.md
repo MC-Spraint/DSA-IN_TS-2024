@@ -30,7 +30,7 @@ representation of the collection.
 Visitor Pattern allows adding operations to existing classes without changing them, encouraging open/close principal of SOLID.
 
 #### [10] Mediator Pattern
-Mediator Pattern encourages loose coupling by keeping two objects to refer each other through a mediator object.
+Mediator Pattern encourages loose coupling by keeping two objects from refering each other through a mediator object.
 
 #### [11] Memento Pattern
 ___
@@ -40,10 +40,12 @@ ___
 The Decorator pattern is a structural design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
 
 #### [2] Proxy Pattern
-The Proxy pattern provides a surrogate or placeholder for another object to control access to it. It acts as an intermediary between the client and the target object, providing additional functionality such as lazy initialization, access control, logging, etc.
+The Proxy pattern provides a surrogate or placeholder for an object, to control access to it by another object. 
+It acts as an intermediary between the two object, providing additional functionality 
+such as lazy initialization, access control, logging, etc.
 
 #### [3] Composite Pattern
-The Composite pattern is used when you need to treat individual objects and compositions of objects uniformly. It allows you to compose objects into tree structures to represent part-whole hierarchies.
+The Composite pattern helps to compose objects into tree structures to represent their hierarchies,treating each node and the entire tree uniformly. 
 
 #### [4] Adapter pattern
 The Adapter pattern allows incompatible interfaces to work together. It wraps an existing class with a new interface so that it becomes compatible with another class.
@@ -57,6 +59,22 @@ The Facade pattern provides a unified interface to a set of interfaces in a subs
 #### [7] Flyweight Pattern
 The Flyweight pattern is used to minimize memory usage or computational expenses by sharing as much as possible with similar objects.
 ___
+
+## **[Creational Pattern]**
+#### [1] Singleton
+Singleton Pattern is a simple and frequently used pattern to ensure a class has only one instance.
+
+#### [2] Factory Method Pattern
+Factory Method Pattern introduces the concept of factory methods and how subclasses can determine which class to instantiate.
+
+#### [3] Abstract Factory
+Builds on the Factory Method to create families of related objects.
+
+#### [4] Builder
+Useful for creating complex objects step by step.
+
+#### [5] Prototype
+Explores cloning objects and the concept of copying existing objects to create new ones.
 
 ## **[S.O.L.I.D Principles]**
 
