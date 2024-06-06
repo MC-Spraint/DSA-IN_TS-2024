@@ -24,7 +24,10 @@ class BankTransferPayment implements PaymentStrategy {
 
 // Context class
 class PaymentContext {
-  constructor(private paymentStrategy: PaymentStrategy) {
+  private paymentStrategy: PaymentStrategy;
+  
+  constructor(paymentStrategy: PaymentStrategy) {
+    this.paymentStrategy = paymentStrategy;
   }
 
   setPaymentStrategy(paymentStrategy: PaymentStrategy) {

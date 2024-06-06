@@ -11,7 +11,7 @@ class Subject {
     this.observers.push(observer);
   }
 
-  removeObserver(observer: Observer) {
+  removeObserver(observer: Observer): void {
     const index = this.observers.indexOf(observer);
     if (index === -1) {
       return;

@@ -60,7 +60,7 @@ class ConcreteObserverB {
 Observer <|.. ConcreteObserverA
 Observer <|.. ConcreteObserverB
 
-Subject -right-> Observer : has-a >
+Subject -right-> Observer : has-many>
 @enduml
 
 
@@ -395,4 +395,9 @@ class Caretaker {
 Originator --> Memento : creates >
 Originator --> Caretaker : uses >
 Caretaker -right-> Memento : has-many + uses >
+
+
+
+
+
 @enduml

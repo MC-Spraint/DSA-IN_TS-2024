@@ -1,3 +1,22 @@
+
+## **[S.O.L.I.D Principles]**
+
+#### [1] Single Responsibility
+The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility or job.
+
+#### [2] Open/Closed Principle (OCP)
+The Open/Closed Principle (OCP) suggests that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means that new functionality should be added through extension rather than by altering existing code.
+
+#### [3] Liskov Substitution Principle (LSP)
+The Liskov Substitution Principle (LSP) asserts that objects of a superclass should be replaceable with objects of a subclass, without affecting the correctness of the program.
+
+#### [4] Interface Segregation Principle (ISP)
+The Interface Segregation Principle (ISP) advises that clients should not be forced to depend on interfaces they do not use. Instead, interfaces should be segregated based on the behavior they define.
+
+#### [5] Dependency Inversion Principle (DIP)
+The Dependency Inversion Principle (DIP) advocates for high-level modules not to depend on low-level modules. Both should depend on abstractions, and abstractions should not depend on details.
+
+
 ## **[Behavioral Pattern]**
 
 #### [1] State Pattern
@@ -61,37 +80,21 @@ The Flyweight pattern is used to minimize memory usage or computational expenses
 ___
 
 ## **[Creational Pattern]**
-#### [1] Singleton
-Singleton Pattern is a simple and frequently used pattern to ensure a class has only one instance.
 
-#### [2] Factory Method Pattern
+#### [1] Factory Method Pattern
 Factory Method Pattern introduces the concept of factory methods and how subclasses can determine which class to instantiate.
 
-#### [3] Abstract Factory
+#### [2] Abstract Factory
 Builds on the Factory Method to create families of related objects.
 
-#### [4] Builder
+#### [3] Builder
 Useful for creating complex objects step by step.
 
-#### [5] Prototype
+#### [4] Prototype
 Explores cloning objects and the concept of copying existing objects to create new ones.
 
-## **[S.O.L.I.D Principles]**
-
-#### [1] Single Responsibility
-The Single Responsibility Principle (SRP) states that a class should have only one reason to change, meaning it should have only one responsibility or job.
-
-#### [2] Open/Closed Principle (OCP)
-The Open/Closed Principle (OCP) suggests that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means that new functionality should be added through extension rather than by altering existing code.
-
-#### [3] Liskov Substitution Principle (LSP)
-The Liskov Substitution Principle (LSP) asserts that objects of a superclass should be replaceable with objects of a subclass, without affecting the correctness of the program.
-
-#### [4] Interface Segregation Principle (ISP)
-The Interface Segregation Principle (ISP) advises that clients should not be forced to depend on interfaces they do not use. Instead, interfaces should be segregated based on the behavior they define.
-
-#### [5] Dependency Inversion Principle (DIP)
-The Dependency Inversion Principle (DIP) advocates for high-level modules not to depend on low-level modules. Both should depend on abstractions, and abstractions should not depend on details.
+#### [5] Singleton
+Singleton Pattern is a simple and frequently used pattern to ensure a class has only one instance.
 
 
 ## Javascript 20 Important Questions
