@@ -1,5 +1,4 @@
-
-
+-- Advanced
 
 -- Stored procedure
 CREATE OR REPLACE PROCEDURE get_high_salary_employees (IN threshold NUMERIC)
@@ -30,7 +29,7 @@ FOR EACH ROW
 EXECUTE FUNCTION update_salary();
 
 
--- Perform database operations
+-- Transactions
 BEGIN TRANSACTION;
 
 -- Perform database operations
@@ -46,13 +45,6 @@ COMMIT TRANSACTION;
 -- This will undo all changes made within the transaction
 ROLLBACK TRANSACTION;
 
--- UNION keyword
-SELECT name, department FROM employees
-UNION
-SELECT name, department FROM managers;
-
---ORDER BY clause
-SELECT * FROM students ORDER BY grade ASC, age DESC;
 
 -- CHECK constraints
 CREATE TABLE employees (

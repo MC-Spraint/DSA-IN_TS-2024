@@ -251,7 +251,7 @@ Fork(): It creates a new child process from the master. The isMaster returns tru
 
 isWorker: It returns true if the current process is a worker or else false.
 
-process: It returns the child process which is global.
+process: It returns the global child process.
 
 send(): It sends a message from worker to master or vice versa.
 

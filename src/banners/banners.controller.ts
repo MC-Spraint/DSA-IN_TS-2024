@@ -2,46 +2,34 @@ import { Request, Response } from "express";
 import { BannersService } from "./banners.service";
 import { Banner } from "./banner.model";
 
-interface BannersControllerMethods {
-  [key: string]: (req: Request, res: Response) => Response<unknown>;
-}
+
 export class BannersController {
-  user: any[];
   constructor(
     private readonly bannersService: BannersService = new BannersService()
   ) {
-    this.user = [{ id: 1, name: "snahashis" }];
+    // Get method names  
     const methodNames = Object.getOwnPropertyNames(
       Object.getPrototypeOf(this)
     ).filter(
-      (method) =>
-        method !== "constructor" &&
-        typeof (this as unknown as BannersControllerMethods)[method] ===
-          "function"
+      (name) =>
+        typeof this[name as keyof this] === "function" &&
+        name !== "constructor"
     );
-
-    methodNames.forEach((method) => {
-      (this as unknown as BannersControllerMethods)[method] = (
-        this as unknown as BannersControllerMethods
-      )[method].bind(this);
+    // To each method, bind reference to 'this'
+    methodNames.forEach((name) => {
+      const fn = this[name as keyof this] as Function;
+      this[name as keyof this] = fn.bind(this);
     });
-
-    // this.getBannerById = this.getBannerById.bind(this);
-    // this.getBanners = this.getBanners.bind(this);
-    // this.createBanner = this.createBanner.bind(this);
-    // this.updateBanner = this.updateBanner.bind(this);
-    // this.deleteBanner = this.deleteBanner.bind(this);
   }
 
   public createBanner(req: Request, res: Response): Response<Banner> {
     const newBanner: Banner = req.body;
-    const createdBanner = this.bannersService.createBanner(newBanner);
+    const createdBanner = this.bannersService.create(newBanner);
     return res.status(201).json(createdBanner);
   }
   public getBanners(req: Request, res: Response): Response<Banner[]> {
-    const banners = this.bannersService.getBanners();
+    const banners = this.bannersService.getAll();
     console.log("this in getBanners:", this);
-    console.log("this.user in getBanners:", this.user);
     return res.status(200).json(banners);
   }
   public getBannerById(
@@ -49,7 +37,7 @@ export class BannersController {
     res: Response
   ): Response<Banner | { message: string }> {
     const { id } = req.params;
-    const banner = this.bannersService.getBannerById(parseInt(id));
+    const banner = this.bannersService.getById(parseInt(id));
     if (!banner) {
       return res.status(404).json({ message: "Banner not found" });
     }
@@ -62,7 +50,7 @@ export class BannersController {
   ): Response<Banner | { message: string }> {
     const { id } = req.params;
     const updatedBanner: Banner = req.body;
-    const result = this.bannersService.updateBanner(
+    const result = this.bannersService.update(
       parseInt(id),
       updatedBanner
     );
@@ -79,7 +67,7 @@ export class BannersController {
     res: Response
   ): Response<{ message: string }> {
     const { id } = req.params;
-    const success = this.bannersService.deleteBanner(parseInt(id));
+    const success = this.bannersService.delete(parseInt(id));
 
     if (!success) {
       return res.status(404).json({ message: "Banner not found" });
