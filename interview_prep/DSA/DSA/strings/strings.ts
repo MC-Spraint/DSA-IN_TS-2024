@@ -65,7 +65,44 @@ export class Strings {
     return ns;
   }
   /**[6] */
+  public longestCommonSubstring(str1: string, str2: string): string {
+    let longest = '';
+    for (let i = 0; i < str1.length; i++) {
+        for (let j = 0; j < str2.length; j++) {
+            let k = 0;
+            while (str1[i + k] && str2[j + k] && str1[i + k] === str2[j + k]) {
+                k++;
+            }
+            if (k > longest.length) {
+                longest = str1.slice(i, i + k);
+            }
+        }
+    }
+    return longest;
+  }
+  public longestSubstring(s: string): string {
+    const map: Map<string, number> = new Map();
+    let maxLength = 0;
+    let start = 0;
+    let longestStart = 0;
+    let longestEnd = 0;
 
+    for (let end = 0; end < s.length; end++) {
+        if (map.has(s[end])) {
+            start = Math.max(map.get(s[end])! + 1, start);
+        }
+        map.set(s[end], end);
+        if (end - start + 1 > maxLength) {
+            maxLength = end - start + 1;
+            longestStart = start;
+            longestEnd = end;
+        }
+    }
+
+    return s.slice(longestStart, longestEnd + 1);
+}
+
+  /**[7] */
   public fullJustify(words: string[], maxWidth: number): string[] {
     const res: string[] = [];
     let line: string[] = [];
@@ -83,6 +120,7 @@ export class Strings {
     res.push(this.leftJustifyLine(line, maxWidth));
     return res;
   }
+  /**[8] */
   private justifyLine(line: string[], len: number, maxWidth: number): string {
     const spaces = maxWidth - len;
     const gaps = line.length - 1;
@@ -101,7 +139,7 @@ export class Strings {
     const lastLine = line.join(" ");
     return lastLine + " ".repeat(maxWidth - lastLine.length);
   }
-  /**[7] */
+  /**[9] */
   static romanToInt(s: string): number {
     const map = new Map<string, number>([
       ["I", 1],
@@ -122,6 +160,7 @@ export class Strings {
     }
     return n;
   }
+  /**[10] */
   static romanToInt1(s: string): number {
     const arr: [string, number][] = [
       ["I", 1],
@@ -149,7 +188,7 @@ export class Strings {
     return 0;
   }
 
-  /**[8] */
+  /**[11] */
   static intToRoman(num: number) {
     const romanNumerals = new Map([
       [1, "I"],
@@ -181,24 +220,7 @@ export class Strings {
     return result;
   }
 
-  public uniquePaths(m: number, n: number): number {
-    const dp: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
 
-    for (let i = 0; i < m; i++) {
-      dp[i][0] = 1;
-    }
-    for (let j = 0; j < n; j++) {
-      dp[0][j] = 1;
-    }
-
-    for (let i = 1; i < m; i++) {
-      for (let j = 1; j < n; j++) {
-        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-      }
-    }
-
-    return dp[m - 1][n - 1];
-  }
 }
 function fullJustify(words: string[], maxWidth: number): string[] {
   let res: string[] = [];
@@ -237,4 +259,53 @@ function fullJustify(words: string[], maxWidth: number): string[] {
   let trailingSpace = maxWidth - lastLine.length;
   res.push(lastLine + " " + trailingSpace);
   return res;
+}
+
+function compressString(str: string): string {
+  let compressed = '';
+  let count = 1;
+  for (let i = 0; i < str.length; i++) {
+      if (str[i] === str[i + 1]) {
+          count++;
+      } else {
+          compressed += `${str[i]}${count}`;
+          count = 1;
+      }
+  }
+  return compressed.length < str.length ? compressed : str;
+}
+function isRotation(str1: string, str2: string): boolean {
+  if (str1.length !== str2.length) return false;
+  const concatenated = str1 + str1;
+  return concatenated.includes(str2);
+}
+function firstNonRepeatingChar(str: string): string {
+  const charCount = {};
+  for (let char of str) {
+      charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
+  for (let char of str) {
+      if (charCount[char] === 1) {
+          return char;
+      }
+  }
+  return '';
+}
+function uniquePaths(m: number, n: number): number {
+  const dp: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
+
+  for (let i = 0; i < m; i++) {
+    dp[i][0] = 1;
+  }
+  for (let j = 0; j < n; j++) {
+    dp[0][j] = 1;
+  }
+
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    }
+  }
+
+  return dp[m - 1][n - 1];
 }
