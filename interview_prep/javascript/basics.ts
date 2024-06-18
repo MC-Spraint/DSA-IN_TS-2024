@@ -23,9 +23,9 @@ async function asyncExample() {
       console.error('Promise.all Error:', error);
     }
   
-  // const allSettledResults = await Promise.allSettled([promise1, promise2, promise3, promise4]);
-  // console.log('Promise.allSettled Result:', allSettledResults);
-  // console.log(promise1)
+  const allSettledResults = await Promise.allSettled([promise1, promise2, promise3, promise4]);
+  console.log('Promise.allSettled Result:', allSettledResults);
+  console.log(promise1)
   }
   asyncExample();
   
