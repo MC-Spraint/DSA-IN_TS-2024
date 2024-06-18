@@ -119,4 +119,95 @@ var obj = {
 const fcall1 = obj.property2.aFunction();
 const fcall2 = obj.property2.aFunction.bind(obj.property2);
 
-console.log(fcall1); // Outputs: "att1 - innerProperty"
+console.log(fcall2()); // Outputs: "att1 - innerProperty"
+
+
+
+//Explicit binding
+function greet() {
+    return "Hello, " + this.name + "!";
+  }
+  
+  const person = { name: "Alice" };
+  const greetWithCall = greet.call(person);
+  const greetWithApply = greet.apply(person);
+  const greetWithBind = greet.bind(person);
+  console.log(greetWithCall()); // Output: Hello, Alice!
+  console.log(greetWithApply()); // Output: Hello, Alice!
+  console.log(greetWithBind()); // Output: Hello, Alice!
+  /*
+  call: The call method allows you to call a function 
+  with a specified this value and arguments 
+  provided individually.
+  
+  apply: Similar to call, the apply method allows you to call a function
+  with a specified this value and an array of arguments.
+  
+  bind: The bind method creates a new function 
+  with a specified this value, without calling the original function immediately. 
+  It's particularly useful for creating a new function 
+  with a fixed this value, which can be called later.
+  */
+  
+  //[5] Partial Application of bind keyword
+  function greet(greeting, name) {
+    return greeting + ', ' + name + '!';
+  }
+  
+  // Partially applying the greet function with the first argument fixed
+  const sayHello = greet.bind(null, "hello");
+  const underTheHoodSayHello = function(name) {
+    return greet.call(null, "hello", name);
+  };
+  
+  
+  // Now sayHello is a function with the 'greeting' argument fixed
+  console.log(sayHello('Alice')); // Output: Hello, Alice!
+  console.log(sayHello('Bob'));   // Output: Hello, Bob!
+  console.log(underTheHoodSayHello('Bob'));
+  
+  //[4] Currying
+  // Normal add function
+  function normalAdd(x, y) {
+    return x + y;
+  }
+  
+  // Curried version of add function
+  function curriedAdd(x) {
+    return function(y) {
+      return x + y;
+    };
+  }
+  
+  // Usage
+  const addTwo = curriedAdd(2);
+  console.log(addTwo(3)); // Output: 5
+  console.log(curriedAdd(2)(3)); // Output: 5
+  
+  //[3] Pipe line composition with 'pipe'
+  const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
+  
+  const add = x => y => x + y;
+  const square = x => x * x;
+  const subtract = x => y => x - y;
+  
+  const calculate = pipe(
+    add(5),
+    square,
+    subtract(10)
+  );
+  
+  console.log(calculate(7)); // Output: 54 (subtract(square(add(7, 5)), 10))
+  
+  
+  
+  //[2]Function composition with "compose"
+  const compose = (...fns) => x => fns.reduceRight((acc, fn) => fn(acc), x);
+  const add = x => y => y + x;
+  const multiply = x => y => y * x;
+  const subtract = x => y => y - x;
+  
+  const calculate = compose(
+    subtract(10),
+    multiply(2),
+  

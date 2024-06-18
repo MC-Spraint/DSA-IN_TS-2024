@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 const command: string = 'ls -la';
 
 exec(command, (err, stdout, stderr) => {
@@ -7,4 +7,20 @@ exec(command, (err, stdout, stderr) => {
     return;
   }
   console.log('Command output:', stdout);
+});
+
+
+//spawn a child_process
+const ls = spawn('ls', ['-lh', '/usr']);
+
+ls.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+});
+
+ls.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+});
+
+ls.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
 });
