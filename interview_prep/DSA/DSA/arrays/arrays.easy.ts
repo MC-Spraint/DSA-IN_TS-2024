@@ -385,4 +385,23 @@ export class ArraysEasy {
     }
     return l;
   }
+  /**[28]*/
+  static canCompleteCircuit(
+    gas: number[],
+    cost: number[]
+){
+    const sumGas = gas.reduce((acc, curr) => acc += curr, 0);
+    const sumCost = cost.reduce((acc, curr) => acc += curr, 0);
+    if (sumGas < sumCost) return -1;
+
+    let [total, start] = [0, 0];
+    for (let i = 0; i < gas.length; i++) {
+        total += gas[i] - cost[i];
+        if(total < 0) {
+            total = 0;
+            start = i + 1;
+        }
+    }
+    return start;
+}
 }
