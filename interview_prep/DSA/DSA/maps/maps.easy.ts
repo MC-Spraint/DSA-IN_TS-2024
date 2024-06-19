@@ -116,18 +116,22 @@ export class MapsEasy {
     return squares;
   }
   static isHappy(n: number): boolean {
-    const map = new Map<number, number[]>();
+    const seen = new Set<number>();
+  
     while (true) {
-      if (map.has(n)) {
+      if(seen.has(n)){
         const squareSum = this.sum(this.squares(n));
-        if (squareSum === 1) return true;
-        if (map.has(squareSum)) return false;
-      } else {
-        map.set(n, this.squares(n));
+        if(squareSum === 1) return true;
+        if(seen.has(squareSum)) return false;
+      }
+      else{
+        seen.add(n);
         n = this.sum(this.squares(n));
       }
+      
     }
   }
+
 
   /**[8]*/
   static containsNearbyDuplicate(nums: number[], k: number): boolean {
@@ -254,7 +258,19 @@ export class MapsEasy {
       indexesArr.push(indexes);
     }
     return indexesArr.filter((elem) => elem.length !== 0);
-  }
+  }  
+  static isHappy2(n: number): boolean {
+    const map = new Map<number, number>();
+    while (true) {
+        if (n === 1) return true;
+        if (map.has(n)) return false;
+
+        const squareSum = this.sum(this.squares(n));
+        map.set(n, squareSum);
+        n = squareSum;
+    }
+}
+
 }
 
 
