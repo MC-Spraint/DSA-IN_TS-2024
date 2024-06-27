@@ -2,7 +2,8 @@
 
 #### [1] Worker Threads
 
-Worker Threads are lightweight threads **within the same Node.js process** that allow for the **parallel execution of JavaScript code**, leveraging **multi-core systems** to improve performance. They provide an efficient way to perform **CPU-intensive tasks** without blocking the event loop, thereby maintaining the responsiveness of the application.
+Worker Threads are lightweight threads **within the same Node.js process** that allow for the **parallel execution of JavaScript code**. 
+They provide an efficient way to perform **CPU-intensive tasks** without blocking the event loop, thereby maintaining the responsiveness of the application.
 
 By sharing memory within the same process, worker threads enable fast in-process communication and data sharing. This makes them ideal for scenarios where tasks require heavy computation or need to operate concurrently without interfering with the main event loop's execution.
 
@@ -10,8 +11,6 @@ By sharing memory within the same process, worker threads enable fast in-process
 
 Child process refers to the nodejs processes, created from another nodejs process that allows
 us to execute other programs, scripts, or commands from within our application like any other nodejs appplications.
-This feature allows us to run **multiple proceses concurrently** or in parallel, which helps in load balancing as well.
-Also, using child processes give us full access to the system's CPU cores, allowing us to parallelize tasks and maximize computational efficiency by leveraging multiple cores simultaneously.
 
 #### [3] Cluster Module:
 
