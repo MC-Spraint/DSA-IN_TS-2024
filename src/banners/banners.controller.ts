@@ -8,18 +8,24 @@ export class BannersController {
     private readonly bannersService: BannersService = new BannersService()
   ) {
     // Get method names  
-    const methodNames = Object.getOwnPropertyNames(
-      Object.getPrototypeOf(this)
-    ).filter(
-      (name) =>
-        typeof this[name as keyof this] === "function" &&
-        name !== "constructor"
-    );
-    // To each method, bind reference to 'this'
-    methodNames.forEach((name) => {
-      const fn = this[name as keyof this] as Function;
-      this[name as keyof this] = fn.bind(this);
-    });
+    // const methodNames = Object.getOwnPropertyNames(
+    //   Object.getPrototypeOf(this)
+    // ).filter(
+    //   (name) =>
+    //     typeof this[name as keyof this] === "function" &&
+    //     name !== "constructor"
+    // );
+    // // To each method, bind reference to 'this'
+    // methodNames.forEach((name) => {
+    //   const fn = this[name as keyof this] as Function;
+    //   this[name as keyof this] = fn.bind(this);
+    // });
+
+    this.createBanner = this.createBanner.bind(this);
+    this.getBanners = this.getBanners.bind(this);
+    this.getBannerById = this.getBannerById.bind(this);
+    this.updateBanner = this.updateBanner.bind(this);
+    this.deleteBanner = this.deleteBanner.bind(this);
   }
 
   public createBanner(req: Request, res: Response): Response<Banner> {

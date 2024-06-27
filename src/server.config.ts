@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import { BaseRouter } from "./router";
 import { ConnectMongoDB } from "./core/config/databases/mongodb.config";
-import { ConnectPostgresql } from "./core/config/databases/postgres.config";
+// import { ConnectPostgresql } from "./core/config/databases/postgres.config";
 // import passport from "passport";
 
 export class ServerConfig {
@@ -29,7 +29,7 @@ export class ServerConfig {
 
   private connectDatabases(): void {
     // ConnectMongoDB();
-    ConnectPostgresql();
+    // ConnectPostgresql();
   }
 
   public start(): void {

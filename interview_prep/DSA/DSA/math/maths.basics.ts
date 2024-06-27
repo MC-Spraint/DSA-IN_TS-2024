@@ -81,7 +81,22 @@ function sumOfSquares(n: number): number {
         n = sumOfSquares(n);
     }
 }
-
+function areAmicableNumbers(a: number, b: number): boolean {
+    if (a === b) return false;
+    return sumOfDivisors(a) === b && sumOfDivisors(b) === a;
+  }
+  function sumOfDivisors(num: number): number {
+    let sum = 0;
+    for (let i = 1; i <= Math.sqrt(num); i++) {
+      if (num % i === 0) {
+        sum += i;
+        if (i !== 1 && i !== num / i) {
+          sum += num / i;
+        }
+      }
+    }
+    return sum;
+  }
 function isPerfectNumber(num: number): boolean {
   if (num <= 1) return false;
 
@@ -127,22 +142,6 @@ function primeFactors(n: number): number[] {
   return factors;
 }
 
-function areAmicableNumbers(a: number, b: number): boolean {
-  if (a === b) return false;
-  return sumOfDivisors(a) === b && sumOfDivisors(b) === a;
-}
-function sumOfDivisors(num: number): number {
-  let sum = 0;
-  for (let i = 1; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      sum += i;
-      if (i !== 1 && i !== num / i) {
-        sum += num / i;
-      }
-    }
-  }
-  return sum;
-}
 function catalanNumber(n: number): number {
     if (n <= 1) return 1;
     let result = 0;
