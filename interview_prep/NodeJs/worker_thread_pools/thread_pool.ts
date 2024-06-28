@@ -55,6 +55,7 @@ export class ThreadPool {
       throw new Error('All workers are busy');
     }
     return new Promise((resolve, reject) => {
+      if(taskData.number === 20) reject(new Error('v'));
       freeWorker.postMessage({ taskId, taskData });
       this.taskQueue.push({ id: taskId, resolve });
     });
