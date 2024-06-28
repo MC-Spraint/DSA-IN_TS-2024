@@ -10,7 +10,6 @@ exec(command, (err, stdout, stderr) => {
   console.log('Command output:', stdout);
 });
 
-
 //spawn a child_process
 const ls = spawn('ls', ['-lh', '/usr']);
 
