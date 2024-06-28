@@ -1,61 +1,90 @@
-import fs from "fs";
-import express from "express";
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import multer from 'multer';
 
-const readableStream = fs.createReadStream("deploy.sh");
-
-// Listen for events on the readable stream
-readableStream.on("data", (chunk) => {
-  console.log("Received chunk:", chunk);
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // File naming convention
+    }
 });
 
-readableStream.on("end", () => {
-  console.log("Readable stream ended");
+const upload = multer({ storage });
+
+const app = express();
+const port = 3000;
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to render the update photo template
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './readable-writable-stream')); // Assuming update_photo_template.html is your template file
 });
 
-readableStream.on('error', (err) => {
-  console.error('Error reading file:', err);
+// Route to handle file upload
+// Route to handle file upload
+app.post('/upload', upload.single('file'), (req:any, res) => {
+  const { path: sourceFilePath } = req.file;
+  const destinationFilePath = path.join(__dirname, 'destination.txt');
+
+  // Create readable and writable streams
+  const readableStream = fs.createReadStream(sourceFilePath);
+  const writableStream = fs.createWriteStream(destinationFilePath);
+
+  readableStream.on('end', () => {
+    console.log('File reading ended');
+    // Delete the uploaded file once read
+    fs.unlinkSync(sourceFilePath);
+  });
+
+  writableStream.on('finish', () => {
+    console.log('File writing finished');
+    res.send('File uploaded and copied successfully!');
+  });
+
+  // Error handling for streams
+  readableStream.on('error', (error) => {
+    console.error('File reading error:', error);
+    res.status(500).send('Error reading file');
+  });
+
+  writableStream.on('error', (error) => {
+    console.error('File writing error:', error);
+    res.status(500).send('Error writing file');
+  });
+
+  // Pipe the readable stream to the writable stream
+  readableStream.pipe(writableStream);
 });
 
-const writableStream = fs.createWriteStream("output.txt");
+// Route to initiate streaming and send data chunk by chunk
+app.get('/start-streaming', (req, res) => {
+    const destinationFilePath = path.join(__dirname, './../public/destination.txt');
+    const readStreamDestination = fs.createReadStream(destinationFilePath, { encoding: 'utf-8' });
 
-// Pipe the readable stream to the writable stream
-readableStream.pipe(writableStream);
-writableStream.write('Hello World!\n');
-writableStream.end();
+    // Set response headers for text/plain content
+    res.setHeader('Content-Type', 'text/plain');
 
-// Listen for events on the writable stream
-writableStream.on("finish", () => {
-  console.log("Writable stream finished writing");
+    // Pipe data from read stream to response chunk by chunk
+    readStreamDestination.on('data', (chunk) => {
+        res.write(chunk);
+    });
+
+    readStreamDestination.on('end', () => {
+        res.end();
+    });
+
+    readStreamDestination.on('error', (err) => {
+        console.error('Error reading file:', err);
+        res.status(500).send('Error reading file');
+    });
 });
 
-writableStream.on("error", (err) => {
-  console.error("Error writing to writable stream:", err);
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

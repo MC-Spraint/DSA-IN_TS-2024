@@ -14,8 +14,7 @@ us to execute other programs, scripts, or commands from within our application l
 
 #### [3] Cluster Module:
 
-The Cluster module in Node.js enables the creation of child processes to distribute incoming network traffic,
-**providing a form of load balancing** and improving the application's overall scalability.
+The Cluster module in Node.js enables the creation of worker processes to distribute incoming network traffic, **providing a form of load balancing** and improving the application's overall scalability.
 
 #### [4] Buffer:
 

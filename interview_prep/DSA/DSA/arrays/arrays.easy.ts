@@ -191,7 +191,7 @@ export class ArraysEasy {
     return candies.reduce((total, current) => total + current, 0);
   }
   /**[14]*/
-  static maximumSubArraySum(a: number[]): number {
+  static maximumSumOfSubArrays(a: number[]): number {//O(n), Kadane's algorithm
     let maxSum = -Infinity;
     let sum = 0;
     for (const num of a) {
@@ -200,37 +200,63 @@ export class ArraysEasy {
     }
     return maxSum;
   }
+  static subArrayWithMaxSum(nums: number[]): number[] {//O(n)
+    let sum = nums[0];
+    let max = nums[0];
+
+    let startIndex = 0;
+    let endIndex = 0;
+    let tempStartIndex = 0;
+
+    for (let i = 1; i < nums.length; i++) {
+        if(sum + nums[i] < nums[i]){
+            sum = nums[i];
+            tempStartIndex = i;
+        }
+        else sum = sum + nums[i];
+
+        if(sum > max){
+            max = sum;
+            endIndex = i;
+            startIndex = tempStartIndex;
+        }
+    }
+    return nums.slice(startIndex, endIndex + 1); 
+}
 
   /**[15]*/
-  static largestSubarrayWithSumK(nums: number[], k: number): number[] {
-    const map: Map<number, number> = new Map();
+  static largestSubarrayWithSumK(nums: number[], k: number): number[] {//O(n)
+    const sumAndIndexMap: Map<number, number> = new Map();
     const n = nums.length;
+
     let maxLength = 0;
     let start = 0;
     let sum = 0;
 
     for (let i = 0; i < n; i++) {
       sum += nums[i];
-      const remaining = sum - k;
+      const remaining = (sum - k);
 
       if (!remaining) {
         maxLength = i + 1;
-        start = 0;
+        // start = 0;
       }
-      if (map.has(remaining)) {
-        const newLength = i - map.get(remaining)!;
+      if (sumAndIndexMap.has(remaining)) {
+        const newLength = i - sumAndIndexMap.get(remaining)!;
         if (maxLength < newLength) {
           maxLength = newLength;
-          start = map.get(remaining)! + 1;
+          start = sumAndIndexMap.get(remaining)! + 1;
         }
       }
-      if (!map.has(sum)) map.set(sum, i);
+      if (!sumAndIndexMap.has(sum))
+        sumAndIndexMap.set(sum, i);
     }
     return nums.slice(start, start + maxLength);
   }
 
   /**[16]*/
   static LongestAlternatingEvenOddSubArray(a: number[]): number {
+    //O(n)
     if (a.length === 0) return 0;
     let count = 1;
     let result = 0;
@@ -248,17 +274,32 @@ export class ArraysEasy {
 
   /**[17]*/
   static minConsecutiveMoves(nums: number[]): number {
-    if (nums.length === 0) return Infinity;
+    //O(n^2)
+    if (nums.length === 0) return 0;
+    let minMoves = Infinity;
 
-    let min = Infinity;
-    let sum = 0;
-    for (const num of nums) {
-      sum += num;
-    }
     for (let i = 0; i < nums.length; i++) {
-      min = Math.min(min, sum - nums.length * nums[i]);
+      let moves = 0;
+      for (let j = 0; j < nums.length; j++) {
+        moves += Math.abs(nums[i] - nums[j]);
+      }
+      minMoves = Math.min(minMoves, moves);
     }
-    return min;
+    return minMoves;
+  }
+  static minMovesMovesOptmzd(nums: number[]): number {//O(n)
+    //O(n)
+    if (nums.length === 0) return 0;
+
+    // Sort the array
+    nums.sort((a, b) => a - b);
+
+    const median = nums[Math.floor(nums.length / 2)];
+    let moves = 0;
+    for (const num of nums) {
+      moves += Math.abs(num - median);
+    }
+    return moves;
   }
 
   /**[18]*/
@@ -386,22 +427,19 @@ export class ArraysEasy {
     return l;
   }
   /**[28]*/
-  static canCompleteCircuit(
-    gas: number[],
-    cost: number[]
-){
-    const sumGas = gas.reduce((acc, curr) => acc += curr, 0);
-    const sumCost = cost.reduce((acc, curr) => acc += curr, 0);
+  static canCompleteCircuit(gas: number[], cost: number[]) {
+    const sumGas = gas.reduce((acc, curr) => (acc += curr), 0);
+    const sumCost = cost.reduce((acc, curr) => (acc += curr), 0);
     if (sumGas < sumCost) return -1;
 
     let [total, start] = [0, 0];
     for (let i = 0; i < gas.length; i++) {
-        total += gas[i] - cost[i];
-        if(total < 0) {
-            total = 0;
-            start = i + 1;
-        }
+      total += gas[i] - cost[i];
+      if (total < 0) {
+        total = 0;
+        start = i + 1;
+      }
     }
     return start;
-}
+  }
 }
