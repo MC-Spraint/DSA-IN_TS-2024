@@ -1,15 +1,24 @@
 import { parentPort } from 'worker_threads';
 
 if (parentPort) {
-  parentPort.on('message', (message) => {
+  parentPort.on('message', async (message) => {
     const { taskId, taskData } = message;
-    const result = heavyCalculation(taskData.number);
-    parentPort?.postMessage({ taskId, result });
+    
+    try {
+      if(taskData.number === 20) throw new Error('v');
+      const result = await heavyCalculation(taskData.number);
+      parentPort?.postMessage({ taskId, result });
 
+    } catch (error: any) {
+      parentPort?.postMessage({ taskId, error: error.message });
+    }
   });
 }
 
-function heavyCalculation(data: number): any {
-  // Perform heavy calculation here
-  return { result: data * 2 };
+async function heavyCalculation(data: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ result: data * 2 });
+    }, 1000); // Simulating delay for heavy computation
+  });
 }

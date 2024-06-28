@@ -14,10 +14,10 @@ export class ThreadPool {
     this.initializePool();
   }
 
-  initializePool(): void {
+  initializePool() {
     for (let i = 0; i < this.poolSize; i++) {
-      const worker = new Worker(path.resolve(__dirname, './worker.ts'));
 
+      const worker = new Worker(path.resolve(__dirname, './worker.ts'));
 
       worker.on('message', (message) => {
         console.log('Received message from worker:', message);
@@ -32,27 +32,31 @@ export class ThreadPool {
           // Optionally handle cases where the task is not found
         }
       });
-
+      worker.on('exit', (code) => {
+        console.log(`Worker process exited with code ${code}`);
+        // Replace the exited worker with a new one
+        // this.replaceWorker(worker);
+      });
       worker.on('error', (err) => {
         console.error('Worker thread error:', err);
         // Handle error scenarios, e.g., retrying tasks, logging errors, etc.
       });
-
+      
 
       this.workers.push(worker);
     }
   }
 
-  executeTask(taskData: any): Promise<any> {
+  async executeTask(taskData: any): Promise<void> {
+    const freeWorker = this.getFreeWorker();
+    const taskId = Date.now().toString();
+
+    if (!freeWorker) {
+      throw new Error('All workers are busy');
+    }
     return new Promise((resolve, reject) => {
-      const freeWorker = this.getFreeWorker();
-      if (freeWorker) {
-        const taskId = Date.now().toString();
-        this.taskQueue.push({ id: taskId, resolve });
-        freeWorker.postMessage({ taskId, taskData });
-      } else {
-        reject(new Error('All workers are busy'));
-      }
+      freeWorker.postMessage({ taskId, taskData });
+      this.taskQueue.push({ id: taskId, resolve });
     });
   }
 
@@ -65,4 +69,31 @@ export class ThreadPool {
     // You might need a more sophisticated check based on your application's logic
     return this.taskQueue.some(task => task.id === worker.threadId.toString());
   }
+  // replaceWorker(workerToReplace: Worker) {
+  //   const index = this.workers.indexOf(workerToReplace);
+  //   if (index !== -1) {
+  //     const newWorker = new Worker(path.resolve(__dirname, './worker.ts'));
+  //     this.workers[index] = newWorker;
+
+  //     newWorker.on('message', (message) => {
+  //       const { taskId, result } = message;
+  //       const taskIndex = this.taskQueue.findIndex(task => task.id === taskId);
+  //       if (taskIndex !== -1) {
+  //         const { resolve } = this.taskQueue[taskIndex];
+  //         resolve(result);
+  //         this.taskQueue.splice(taskIndex, 1); // Remove the task from the queue
+  //       }
+  //     });
+
+  //     newWorker.on('error', (err) => {
+  //       console.error('Worker process error:', err);
+  //     });
+
+  //     newWorker.on('exit', (code) => {
+  //       console.log(`Worker process exited with code ${code}`);
+  //       // Replace the exited worker with a new one recursively
+  //       this.replaceWorker(newWorker);
+  //     });
+  //   }
+  // }
 }
