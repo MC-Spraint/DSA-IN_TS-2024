@@ -1,0 +1,97 @@
+
+
+// Create and populate the `users` collection
+db.users.insertMany([
+  {
+    _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e1"), 
+    username: "john_doe", 
+    email: "john.doe@example.com", 
+    age: 25,
+    posts: [
+      { post_id: ObjectId(), title: "Post 1", content: "Content of post 1" },
+      { post_id: ObjectId(), title: "Post 2", content: "Content of post 2" }
+    ]
+  },
+  {
+    _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e2"), 
+    username: "jane_doe", 
+    email: "jane.doe@example.com", 
+    age: 30,
+    posts: [
+      { post_id: ObjectId(), title: "Post 3", content: "Content of post 3" }
+    ]
+  },
+  {
+    _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e3"), 
+    username: "alice", 
+    email: "alice@example.com", 
+    age: 22,
+    posts: [
+      { post_id: ObjectId(), title: "Post 4", content: "Content of post 4" },
+      { post_id: ObjectId(), title: "Post 5", content: "Content of post 5" }
+    ]
+  },
+  {
+    _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e4"), 
+    username: "bob", 
+    email: "bob@example.com", 
+    age: 28,
+    posts: [
+      { post_id: ObjectId(), title: "Post 6", content: "Content of post 6" }
+    ]
+  },
+  {
+    _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e5"), 
+    username: "charlie", 
+    email: "charlie@example.com", 
+    age: 35,
+    posts: [
+      { post_id: ObjectId(), title: "Post 7", content: "Content of post 7" },
+      { post_id: ObjectId(), title: "Post 8", content: "Content of post 8" }
+    ]
+  }
+]);
+
+// Create and populate the `orders` collection
+db.orders.insertMany([
+  {
+    _id: ObjectId(), 
+    customer_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e1"), 
+    amount: 100, 
+    product_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e6"), 
+    order_date: new Date(), 
+    quantity: 2 
+  },
+  {
+    _id: ObjectId(), 
+    customer_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e2"), 
+    amount: 200, 
+    product_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e7"), 
+    order_date: new Date(), 
+    quantity: 1 
+  },
+  {
+    _id: ObjectId(), 
+    customer_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e1"), 
+    amount: 150, 
+    product_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e8"), 
+    order_date: new Date(), 
+    quantity: 3 
+  },
+  {
+    _id: ObjectId(), 
+    customer_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e3"), 
+    amount: 250, 
+    product_id: ObjectId("60d5f60ee1d3a4b8f1b8b6e9"), 
+    order_date: new Date(), 
+    quantity: 1 
+  }
+]);
+
+// Create and populate the `products` collection
+db.products.insertMany([
+  { _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e6"), name: "Product A", price: 50 },
+  { _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e7"), name: "Product B", price: 30 },
+  { _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e8"), name: "Product C", price: 20 },
+  { _id: ObjectId("60d5f60ee1d3a4b8f1b8b6e9"), name: "Product D", price: 40 }
+]);

@@ -1,0 +1,96 @@
+db.users.aggregate([
+  { $match: { age: { $gte: 12 } } },
+  { $sort: { age: 1 } },
+  { $skip: 2 },
+  { $limit: 5 },
+  {
+    $group: {
+      _id: "$age",
+      avg: { $avg: "$age" },
+      usernames: { $push: "$username" }, // Collect usernames in an array
+      emails: { $push: "$email" } // Collect emails in an array
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      avg: 1,
+      usernames: 1,
+      emails: 1
+    }
+  }
+]);
+
+//Left join
+db.users.aggregate([
+  {
+    $lookup: {
+      from: "orders",
+      localField: "_id",
+      foreignField: "customer_id",
+      as: "order_details"
+    }
+  },
+  { $unwind: "$order_details" }, 
+  { $replaceRoot: { newRoot: "$order_details" } }
+]);
+
+//Right join
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "customer_id",
+      foreignField: "_id",
+      as: "customer_details"
+    }
+  },
+  { $unwind: "$customer_details" },
+  {
+    $lookup: {
+      from: "products",
+      localField: "product_id",
+      foreignField: "_id",
+      as: "product_details"
+    }
+  },
+  { $unwind: "$product_details" },
+  {
+    $project: {
+      order_date: 1,
+      quantity: 1,
+      "customer_details.username": 1,
+      "customer_details.email": 1,
+      "product_details.name": 1,
+      "product_details.price": 1
+    }
+  }
+]);
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "products",
+      localField: "product_id",
+      foreignField: "_id",
+      as: "product_details"
+    }
+  },
+  { $unwind: "$product_details" }, //array to object
+  {
+    $project: {
+      order_date: 1,
+      quantity: 1,
+      "product_details.name": 1,
+      "product_details.price": 1
+    }
+  }
+]);
+
+db.users.aggregate([
+  { $project: { _id: 0, username: 1, email: 1 } }
+]);
+db.orders.aggregate([
+  { $group: { _id: "$customer_id", totalAmount: { $sum: "$amount" } } }
+]);
+
+

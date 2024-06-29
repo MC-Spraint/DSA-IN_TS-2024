@@ -1,3 +1,22 @@
+-- Step 1: Filter, sort, skip, and limit the users
+WITH filtered_users AS (
+    SELECT *
+    FROM users
+    WHERE age >= 12
+    ORDER BY age ASC
+    OFFSET 2
+    LIMIT 5
+)
+
+-- Step 2: Group by age and aggregate
+SELECT
+    age AS _id,
+    AVG(age) AS avg,
+    ARRAY_AGG(username) AS usernames,
+    ARRAY_AGG(email) AS emails
+FROM filtered_users
+GROUP BY age;
+
 SELECT name, population, area FROM World
 WHERE area >= 3000000 OR
 population >= 25000000

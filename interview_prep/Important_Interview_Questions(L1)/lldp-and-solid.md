@@ -56,15 +56,15 @@ ___
 
 ## **[Structural Pattern]**
 #### [1] Decorator Pattern
-The Decorator pattern is a structural design pattern that allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
+It allows behavior to be added to individual objects, either statically or dynamically, without affecting the behavior of other objects from the same class. It is often used to extend the functionality of objects in a flexible and reusable way.
 
 #### [2] Proxy Pattern
-The Proxy pattern provides a surrogate or placeholder for an object, to control access to it by another object. 
+Provides a surrogate or placeholder for an object, to control access to it by another object. 
 It acts as an intermediary between the two object, providing additional functionality 
 such as lazy initialization, access control, logging, etc.
 
 #### [3] Composite Pattern
-The Composite pattern helps to compose objects into tree structures to represent their hierarchies,treating each node and the entire tree uniformly. 
+The Composite pattern helps to compose objects into tree structures to represent their part whole hierarchies,treating each node and the entire tree uniformly. 
 
 #### [4] Adapter pattern
 The Adapter pattern allows incompatible interfaces to work together. It wraps an existing class with a new interface so that it becomes compatible with another class.
