@@ -31,6 +31,7 @@ db.users.aggregate([
       as: "order_details"
     }
   },
+  { $match: { username: { $eq: "john_doe"} }},
   { $unwind: "$order_details" }, 
   { $replaceRoot: { newRoot: "$order_details" } }
 ]);
