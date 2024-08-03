@@ -29,7 +29,7 @@ Higher-order functions are functions that take other functions as arguments or r
 
 ### [7] What are the differences between let, var, and const?
 
-1. var: var is function-scoped and can be re-declared and updated throughout the function.
+1. var: var is global-scoped and can be re-declared and updated throughout a function.
 2. let: let is block-scoped, can be updated but not re-declared in the same scope.
 3. const: const is block-scoped, cannot be updated or re-declared once initialized.
 

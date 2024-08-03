@@ -2,34 +2,43 @@
 
 #### [1] Worker Threads
 
-Worker Threads are lightweight threads **within the same Node.js process** that allow for the **parallel execution of JavaScript code**. 
+Worker Threads are lightweight threads **within the same Node.js process** that allow for the **parallel execution of JavaScript code**.
 They provide an efficient way to perform **CPU-intensive tasks** without blocking the event loop, thereby maintaining the responsiveness of the application.
 
 By sharing memory within the same process, worker threads enable fast in-process communication and data sharing. This makes them ideal for scenarios where tasks require heavy computation or need to operate concurrently without interfering with the main event loop's execution.
-
+  
 #### [2] Child Process
 
-Child process refers to the nodejs processes, created from another nodejs process that allows
-us to execute other programs, scripts, or commands from within our application like any other nodejs appplications.
+Child process refers to the nodejs process created from another nodejs process that allows
+us to execute other programs, scripts, or commands from within the application like any other nodejs appplications.
 
 #### [3] Cluster Module:
 
-The Cluster module in Node.js enables the creation of worker processes to distribute incoming network traffic, **providing a form of load balancing** and improving the application's overall scalability.
+The Cluster module in Node.js enables the creation of **worker processes** to distribute incoming network traffic, **providing a form of load balancing** and improving the application's overall scalability.
 
-#### [4] Buffer:
+#### [4] How does Node.js handle child threads?
 
-Simply put, It's like an array of integers corresponds to raw memory allocation outside the v8 heap, a Buffer is a way to store and manipulate binary data in Node. js. Binary data refers to data that consists of binary values, as opposed to text data, which consists of characters and symbols. Examples of binary data include images, audio and video files, and raw data from a network
+Node.js is designed to be single-threaded, which means it executes code on a single thread, the main event loop. However, for performing CPU-intensive tasks, Node.js can spawn child threads using the child_process module (via spawn, fork, exec, etc.) to execute other Node.js processes or other applications in separate processes.
 
-#### [5] Streams:
+#### [5] Streams and Buffers:
 
-Streams in Node.js are objects that allow reading or writing data continuously. They enable efficient handling of large data sets or data that arrives in chunks, without needing to load the entire data into memory at once. Examples include Readable, Writable, Duplex, and Transform streams.
+##### -Streams
+Streams in Node.js are objects that allow reading or writing data continuously. They enable efficient handling of large data sets or data that arrives in chunks, without needing to load the entire data into memory at once. 
+There are in total four type of streams: 
+(1) Readable (2) Writable (3) Duplex (4) Transform
+
+##### -Buffers
+Simply put, Buffer is like an array of integers corresponds to raw memory allocation outside the v8 heap, a Buffer is a way to store and manipulate **binary data** in Node. js.
+Examples of binary data include images, audio and video files, and raw data from a network.
 
 #### [6] Why NodeJs Single-threated
 
-Node.js is single-threaded because it follows an event-driven architecture based on JavaScript's event loop. 
-This event-driven architechture allows Node.js to handle asynchronous I/O operations efficiently and scale well with concurrent requests while maintaining simplicity and performance.
+NodeJs follows an event-driven architecture based on JavaScript's event loop which utilizes reactor design pattern that has the ability of handling multiple clients concurrently without creating seperate threads for each client.
 
-#### [7] What is concurrency in NodeJs?
+This is the reason behind NodeJs being single-threaded, and this event-driven architechture allows it to handle asynchronous I/O operations efficiently and scale well with concurrent requests, while maintaining simplicity and performance.
+
+
+#### [7] What is concurrency in NodeJs and how is it achieved?
 
 Concurrency in Node.js refers to the ability of the runtime environment **to handle multiple tasks simultaneously**.
 Node.js is inherently single-threaded, meaning it processes JavaScript code using a single main thread.
@@ -37,12 +46,14 @@ However, Node.js achieves concurrency through **non-blocking I/O operations and 
 
 #### [8] Event Loop:
 
-The event loop is the mechanism that enables Node.js to achieve non-blocking I/O and event-driven concurrency despite JavaScript being single-threaded.
+The event loop is the mechanism that enables NodeJs to achieve **'Non-blocking' I/O and 'Event-driven' concurrency** despite JavaScript being single-threaded.
 
-In Node.js, most operations are executed asynchronously. 
-When asynchronous functions complete, they get popped out of the call stack firing an event and their callbacks are pushed into the event queue sequentially.
+In Node.js, most operations are executed asynchronously.
+When asynchronous functions complete, they get popped out of the call stack each firing an event and a callback is attached to it.
 
-As the callbacks get pushed onto the event queue, the Event Loop processes them completing their event cycles one by one as they come out the other end in a FIFO pattern and constantly checks the queue to see if any callbacks are still waiting to be processed. If there are, it takes each callback one by one and processes them, thus making Node.js asynchronous.
+And as these events are pushed into the event queue sequentially, the 'Event-Loop' processes them one by one by executing their corresponding callbacks, as they come out the other end in a FIFO pattern. 
+
+And it even constantly checks if there are more events in the queue. Whenever there are, it takes each event one by one and processes them, thus making Node.js asynchronous.
 
 #### [9] Event-Emitter
 
@@ -86,8 +97,9 @@ Rejected: The operation has failed and the promise holds the reason for the fail
 
 #### [16] Libuv:
 
-Libuv is a **multi-platform support library** that provides asynchronous I/O operations and abstracts operating system-specific functionalities, such as networking, file system access, and concurrency primitives.
-It serves as the core component of Node.js's event loop implementation, handling tasks such as managing I/O events, timers, and callbacks. Libuv enables Node.js to achieve non-blocking I/O and event-driven concurrency by efficiently handling asynchronous operations on various platforms, including Linux, macOS, and Windows. Its cross-platform nature ensures consistent behavior and performance across different operating systems.
+Libuv is a **multi-platform support library** that provides **asynchronous I/O operations** and abstracts operating system-specific functionalities, such as networking, file system access, and concurrency primitives.
+It serves as the core component of Node.js's event loop implementation, handling tasks such as managing I/O events, timers, and callbacks. Libuv enables Node.js to achieve **non-blocking I/O** and **event-driven concurrency** by efficiently handling asynchronous operations on various platforms, including Linux, macOS, and Windows. Its cross-platform nature ensures consistent behavior and performance across different operating systems.
+
 
 #### [17] REPL
 
@@ -121,9 +133,9 @@ send(): It sends a message from worker to master or vice versa.
 
 kill(): It is used to kill the current worker.
 
-#### [23] How does Node.js handle child threads?
+#### [23] Buffer:
 
-Node.js is designed to be single-threaded, which means it executes code on a single thread, the main event loop. However, for performing CPU-intensive tasks, Node.js can spawn child threads using the child_process module (via spawn, fork, exec, etc.) to execute other Node.js processes or other applications in separate processes.
+Simply put, It's like an array of integers corresponds to raw memory allocation outside the v8 heap, a Buffer is a way to store and manipulate binary data in Node. js. Binary data refers to data that consists of binary values, as opposed to text data, which consists of characters and symbols. Examples of binary data include images, audio and video files, and raw data from a network.
 
 
 #### [24] Polling
@@ -132,7 +144,6 @@ In Node.js, polling refers to the process of periodically checking for changes o
 #### [25] Controll Flow
 
 In Node.js, control flow refers to the order in which statements and functions are executed in your code. Node.js operates on a single-threaded, event-driven model, which means that it executes JavaScript code in a non-blocking, asynchronous manner.
-Controll flow in NodeJs includes -
 
 #### [26] Call-Stack
 
@@ -166,8 +177,8 @@ Even though Node.js is single-threaded, it operates on a non-blocking I/O and ev
 Asynchronous functions return promises, which represent eventual success or failure of the program. 
 Node.js assigns callbacks to these asynchronous functions instead of waiting for their completion before proceeding to the next, contributing to its non-blocking nature.
 
-When these functions complete, they get popped out of the call stack firing an event and their callbacks are pushed into the event queue sequentially. 
+When these functions complete, they get popped out of the call stack firing an event and a callback is attcahed to it, before the events are pushed into the event queue sequentially. 
 
-This asynchronous nature of Node.js is powered by its 'Event Loop', which also acts as the heart of Node.js and is responsible for managing these callbacks and their events.
+This asynchronous nature of Node.js is powered by its 'Event Loop', which also acts as the heart of Node.js and is responsible for managing these their events.
 
-After pushing these callbacks into the event queue, the Event Loop processes them completing their event cycles one by one as they come out the other end in a FIFO pattern and constantly checks the queue to see if any callbacks are still waiting to be processed. If there are, it takes each callback one by one and processes them, thus making Node.js asynchronous.
+After pushing these events into the event queue, the Event Loop processes them one by one by executing their corresponding callbacks, as they come out the other end in a FIFO pattern and constantly checks the queue to see if more events are still waiting to be processed. If there are, it takes each event one by one and processes them, thus making Node.js asynchronous.

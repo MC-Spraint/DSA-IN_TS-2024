@@ -95,3 +95,22 @@ db.orders.aggregate([
 ]);
 
 
+//aggregation equivalant to psql
+db.order.aggregate([
+  {
+    $project: {
+      _id: 1,
+      totalItems: {
+        $reduce: {
+          input: "$items",
+          initialValue: 0,
+          in: { 
+              $add: [
+              "$$value", 
+              { $toInt: { $ifNull: [ "$$this.quantity", 0 ] } }] }
+        }
+      }
+    }
+  }
+]);
+
