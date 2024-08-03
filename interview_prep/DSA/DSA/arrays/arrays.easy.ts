@@ -81,41 +81,59 @@ export class ArraysEasy {
   }
 
   /**[8]*/
-  static ceilAndFloors(
+  static getFloorAndCeil(
+    target: number,
     nums: number[]
-  ): [Map<number, number>, Map<number, number>] {
-    const ceils = new Map<number, number>();
-    const floors = new Map<number, number>();
-
-    for (let i = 0; i < nums.length; i++) {
-      let ceil = Number.MAX_SAFE_INTEGER;
-      let floor = Number.MIN_SAFE_INTEGER;
-      for (let j = 0; j < nums.length; j++) {
-        if (nums[i] < nums[j] && nums[j] < ceil && i !== j) ceil = nums[j];
-        if (nums[i] > nums[j] && nums[j] > floor && i !== j) floor = nums[j];
-      }
-      if (ceil === Number.MAX_SAFE_INTEGER) ceil = nums[i];
-      if (floor === Number.MIN_SAFE_INTEGER) floor = nums[i];
-      ceils.set(nums[i], ceil);
-      floors.set(nums[i], floor);
-    }
-    return [ceils, floors];
-  }
-
-  /**[9]*/
-  static secondLargestElement(arr: number[]): number {
-    let max = arr[0];
-    for (let i = 0; i < arr.length; i++) {
-      max = Math.max(max, arr[i]);
-    }
+  ): [number | null, number | null] {
 
     let floor = Number.MIN_SAFE_INTEGER;
-    for (let i = 0; i < arr.length; i++) {
-      const condition =
-        max > arr[i] && arr[i] > floor && i !== arr.indexOf(max);
-      if (condition) floor = arr[i];
-    }
-    return floor;
+    let ceil = Number.MAX_SAFE_INTEGER;
+
+    nums.forEach((curr, i, arr) => {
+      const isCurrInPlaceOf = (target) => i === arr.indexOf(target);
+
+      //find floor
+      const isInOrderFloorCurrMax = floor < curr && curr < target;
+      if (!isCurrInPlaceOf(target) && isInOrderFloorCurrMax) {
+        floor = curr;
+      }
+      //find ceil
+      const isInOrderMinCurrCeil = target < curr && curr < ceil;
+      if (!isCurrInPlaceOf(target) && isInOrderMinCurrCeil) {
+        ceil = curr;
+      }
+    });
+    return [
+      floor === Number.MIN_SAFE_INTEGER ? null : floor,
+      ceil === Number.MAX_SAFE_INTEGER ? null : ceil,
+    ];
+  }
+
+  static secondLargestAndSmallest(nums: number[]): [number, number] {
+    let max = Number.MIN_SAFE_INTEGER;
+    let min = Number.MAX_SAFE_INTEGER;
+
+    nums.forEach((curr, i) => {
+      if (curr > max) max = curr;
+      if (curr < min) min = curr;
+    });
+
+    let floor = Number.MIN_SAFE_INTEGER;
+    let ceil = Number.MAX_SAFE_INTEGER;
+
+    nums.forEach((curr, i, arr) => {
+      const isCurrInPlaceOf = (target) => i === arr.indexOf(target);
+
+      //find 2nd largest
+      const isInOrderFloorCurrMax = floor < curr && curr < max;
+      if (!isCurrInPlaceOf(max) && isInOrderFloorCurrMax) floor = curr;
+
+      //find 2nd smallest
+      const isInOrderMinCurrCeil = min < curr && curr < ceil;
+      if (!isCurrInPlaceOf(min) && isInOrderMinCurrCeil) ceil = curr;
+    });
+
+    return [ceil, floor];
   }
 
   /**[10]*/
@@ -191,7 +209,8 @@ export class ArraysEasy {
     return candies.reduce((total, current) => total + current, 0);
   }
   /**[14]*/
-  static maximumSumOfSubArrays(a: number[]): number {//O(n), Kadane's algorithm
+  static maximumSumOfSubArrays(a: number[]): number {
+    //O(n), Kadane's algorithm
     let maxSum = -Infinity;
     let sum = 0;
     for (const num of a) {
@@ -200,7 +219,8 @@ export class ArraysEasy {
     }
     return maxSum;
   }
-  static subArrayWithMaxSum(nums: number[]): number[] {//O(n)
+  static subArrayWithMaxSum(nums: number[]): number[] {
+    //O(n)
     let sum = nums[0];
     let max = nums[0];
 
@@ -209,23 +229,23 @@ export class ArraysEasy {
     let tempStartIndex = 0;
 
     for (let i = 1; i < nums.length; i++) {
-        if(sum + nums[i] < nums[i]){
-            sum = nums[i];
-            tempStartIndex = i;
-        }
-        else sum = sum + nums[i];
+      if (sum + nums[i] < nums[i]) {
+        sum = nums[i];
+        tempStartIndex = i;
+      } else sum = sum + nums[i];
 
-        if(sum > max){
-            max = sum;
-            endIndex = i;
-            startIndex = tempStartIndex;
-        }
+      if (sum > max) {
+        max = sum;
+        endIndex = i;
+        startIndex = tempStartIndex;
+      }
     }
-    return nums.slice(startIndex, endIndex + 1); 
-}
+    return nums.slice(startIndex, endIndex + 1);
+  }
 
   /**[15]*/
-  static largestSubarrayWithSumK(nums: number[], k: number): number[] {//O(n)
+  static largestSubarrayWithSumK(nums: number[], k: number): number[] {
+    //O(n)
     const sumAndIndexMap: Map<number, number> = new Map();
     const n = nums.length;
 
@@ -235,7 +255,7 @@ export class ArraysEasy {
 
     for (let i = 0; i < n; i++) {
       sum += nums[i];
-      const remaining = (sum - k);
+      const remaining = sum - k;
 
       if (!remaining) {
         maxLength = i + 1;
@@ -248,8 +268,7 @@ export class ArraysEasy {
           start = sumAndIndexMap.get(remaining)! + 1;
         }
       }
-      if (!sumAndIndexMap.has(sum))
-        sumAndIndexMap.set(sum, i);
+      if (!sumAndIndexMap.has(sum)) sumAndIndexMap.set(sum, i);
     }
     return nums.slice(start, start + maxLength);
   }
@@ -287,7 +306,8 @@ export class ArraysEasy {
     }
     return minMoves;
   }
-  static minMovesMovesOptmzd(nums: number[]): number {//O(n)
+  static minMovesMovesOptmzd(nums: number[]): number {
+    //O(n)
     //O(n)
     if (nums.length === 0) return 0;
 
