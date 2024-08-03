@@ -85,12 +85,11 @@ export class ArraysEasy {
     target: number,
     nums: number[]
   ): [number | null, number | null] {
-
     let floor = Number.MIN_SAFE_INTEGER;
     let ceil = Number.MAX_SAFE_INTEGER;
 
     nums.forEach((curr, i, arr) => {
-      const isCurrInPlaceOf = (target) => i === arr.indexOf(target);
+      const isCurrInPlaceOf = (target: number) => i === arr.indexOf(target);
 
       //find floor
       const isInOrderFloorCurrMax = floor < curr && curr < target;
@@ -109,6 +108,7 @@ export class ArraysEasy {
     ];
   }
 
+  /**[9]*/
   static secondLargestAndSmallest(nums: number[]): [number, number] {
     let max = Number.MIN_SAFE_INTEGER;
     let min = Number.MAX_SAFE_INTEGER;
@@ -122,7 +122,7 @@ export class ArraysEasy {
     let ceil = Number.MAX_SAFE_INTEGER;
 
     nums.forEach((curr, i, arr) => {
-      const isCurrInPlaceOf = (target) => i === arr.indexOf(target);
+      const isCurrInPlaceOf = (target: number) => i === arr.indexOf(target);
 
       //find 2nd largest
       const isInOrderFloorCurrMax = floor < curr && curr < max;
