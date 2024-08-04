@@ -131,7 +131,7 @@ namespace CarRentalSystem {
   class Lock {
     private promise: Promise<void> = Promise.resolve();
     private resolve: (() => void) | null = null;
-  
+
     async acquire(): Promise<void> {
       let acquired = false;
       while (!acquired) {
@@ -145,7 +145,7 @@ namespace CarRentalSystem {
         });
       }
     }
-  
+
     release(): void {
       if (this.resolve) {
         this.resolve();
@@ -156,59 +156,118 @@ namespace CarRentalSystem {
 
   // BaseRepository class
   abstract class BaseRepository<T extends { id: string }> {
+    protected lock: Lock;
     protected dataPool: DataPool;
     protected data: T[];
 
     constructor(data: T[] = [], dataPool: DataPool) {
+      this.lock = new Lock();
       this.data = data;
       this.dataPool = dataPool;
     }
 
     async add(item: T): Promise<string> {
-      this.data.push(item);
-      return Promise.resolve(item.id);
+      await this.lock.acquire();
+      try {
+        this.data.push(item);
+        return Promise.resolve(item.id);
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.add.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async getAll(): Promise<T[]> {
-      return Promise.resolve(this.data);
+      await this.lock.acquire();
+
+      try {
+        return Promise.resolve(this.data);
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.getAll.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async getById(id: string): Promise<T | undefined> {
-      return Promise.resolve(this.data.find((item: any) => item.id === id));
+      await this.lock.acquire();
+      try {
+        return Promise.resolve(this.data.find((item: any) => item.id === id));
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.getById.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async removeById(id: string): Promise<boolean> {
-      const index = this.data.findIndex((item: any) => item.id === id);
-      if (index !== -1) {
-        this.data.splice(index, 1);
-        return Promise.resolve(true);
+      await this.lock.acquire();
+      try {
+        const index = this.data.findIndex((item: any) => item.id === id);
+        if (index !== -1) {
+          this.data.splice(index, 1);
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.removeById.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
       }
-      return Promise.resolve(false);
     }
 
     async updateById(id: string, updatedItem: T): Promise<boolean> {
-      const index = this.data.findIndex((item: any) => item.id === id);
-      if (index !== -1) {
-        this.data[index] = updatedItem;
-        return Promise.resolve(true);
+      await this.lock.acquire();
+      try {
+        const index = this.data.findIndex((item: any) => item.id === id);
+        if (index !== -1) {
+          this.data[index] = updatedItem;
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.updateById.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
       }
-      return Promise.resolve(false);
     }
 
     // Generalized method with criteria
     async removeByCriteria(criteria: (item: T) => boolean): Promise<boolean> {
-      const index = this.data.findIndex(criteria);
-      if (index !== -1) {
-        this.data.splice(index, 1);
-        return Promise.resolve(true);
+      await this.lock.acquire();
+      try {
+        const index = this.data.findIndex(criteria);
+        if (index !== -1) {
+          this.data.splice(index, 1);
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.removeByCriteria.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
       }
-      return Promise.resolve(false);
     }
 
     async getByCriteria(
       criteria: (item: T) => boolean
     ): Promise<T | undefined> {
-      return Promise.resolve(this.data.find(criteria));
+      await this.lock.acquire();
+      try {
+        return Promise.resolve(this.data.find(criteria));
+      } catch (error) {
+        throw new Error(`[${BaseRepository.name}] ${this.getByCriteria.name}
+        : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
   }
 
@@ -558,13 +617,14 @@ namespace CarRentalSystem {
     ): Promise<void>;
   }
   class BookingService implements IBookingService {
+    private lock: Lock = new Lock();
     constructor(
       private addressRepo: AddressRepository,
       private userRepo: UserRepository,
       private vehicleRepo: VehicleRepository,
       private bookingRepo: BookingRepository,
       private paymentService: PaymentService,
-      private notificationService: NotificationService,
+      private notificationService: NotificationService
     ) {}
     // ### Start ###
     async createReservation(
@@ -573,210 +633,259 @@ namespace CarRentalSystem {
       startDate: Date,
       endDate: Date
     ): Promise<string> {
-      //Get user
-      const user = await this.userRepo.getById(userId);
-      if (!user) {
-        throw new Error(`User not found`);
+      await this.lock.acquire();
+      try {
+        //Get user
+        const user = await this.userRepo.getById(userId);
+        if (!user) {
+          throw new Error(`User not found`);
+        }
+
+        //Get Vehicle with status AVAILABLE
+        const vehicle = await this.getVehicleStatusUsingValidation(
+          vehicleId,
+          VehicleStatus.AVAILABLE,
+          `Vehicle is eighter not found or not available`
+        );
+        //Update vehicle status to RESERVED
+        vehicle.status = VehicleStatus.RESERVED;
+        await this.vehicleRepo.updateById(vehicleId, vehicle);
+
+        //Create booking
+        const newbooking = new Booking(
+          generateId(),
+          userId,
+          vehicleId,
+          startDate,
+          endDate
+        );
+        const bookingId = await this.bookingRepo.add(newbooking);
+
+        this.notificationService.subscribe(user);
+
+        return bookingId;
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.createReservation.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
       }
-
-      //Get Vehicle with status AVAILABLE
-      const vehicle = await this.getVehicleStatusUsingValidation(
-        vehicleId,
-        VehicleStatus.AVAILABLE,
-        `Vehicle is eighter not found or not available`
-      );
-      //Update vehicle status to RESERVED
-      vehicle.status = VehicleStatus.RESERVED;
-      await this.vehicleRepo.updateById(vehicleId, vehicle);
-
-      //Create booking
-      const newbooking = new Booking(
-        generateId(),
-        userId,
-        vehicleId,
-        startDate,
-        endDate
-      );
-      const bookingId = await this.bookingRepo.add(newbooking);
-
-      this.notificationService.subscribe(user);
-
-      return bookingId;
     }
 
     async confirmBookingToGetBarCode(
       bookingId: string
     ): Promise<{ barCode: string; booking: Booking }> {
-      //Get booking with status PENDING
-      const booking = await this.getBookingStatusUsingValidation(
-        bookingId,
-        BookingStatus.PENDING
-      );
+      await this.lock.acquire();
+      try {
+        //Get booking with status PENDING
+        const booking = await this.getBookingStatusUsingValidation(
+          bookingId,
+          BookingStatus.PENDING
+        );
 
-      //Update booking status to CONFIRMED
-      booking.status = BookingStatus.CONFIRMED;
-      await this.bookingRepo.updateById(bookingId, booking);
+        //Update booking status to CONFIRMED
+        booking.status = BookingStatus.CONFIRMED;
+        await this.bookingRepo.updateById(bookingId, booking);
 
-      //Create barcode
-      const barCode = generateId();
-      await this.bookingRepo.addBarCodeToBooking(barCode, booking.id);
+        //Create barcode
+        const barCode = generateId();
+        await this.bookingRepo.addBarCodeToBooking(barCode, booking.id);
 
-      const notificationContext = new NotificationContext(
-        booking.userId,
-        NotificationType.EMAIL
-      );
-      this.notificationService.sendNotificationToOne(
-        `User[id: ${booking.userId}] Booking[id: ${bookingId}] 
+        const notificationContext = new NotificationContext(
+          booking.userId,
+          NotificationType.EMAIL
+        );
+        this.notificationService.sendNotificationToOne(
+          `User[id: ${booking.userId}] Booking[id: ${bookingId}] 
             Booking successful`,
-        notificationContext,
-        booking.userId
-      );
-      return { barCode, booking };
+          notificationContext,
+          booking.userId
+        );
+        return { barCode, booking };
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.confirmBookingToGetBarCode.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
+
     async cancelBooking(bookingId: string): Promise<void> {
-      //Get booking with status CONFIRMED
-      const booking = await this.getBookingStatusUsingValidation(
-        bookingId,
-        BookingStatus.CONFIRMED
-      );
-      //Get Vehicle with status RESERVED
-      const vehicle = await this.getVehicleStatusUsingValidation(
-        booking.id,
-        VehicleStatus.RESERVED
-      );
+      await this.lock.acquire();
+      try {
+        //Get booking with status CONFIRMED
+        const booking = await this.getBookingStatusUsingValidation(
+          bookingId,
+          BookingStatus.CONFIRMED
+        );
+        //Get Vehicle with status RESERVED
+        const vehicle = await this.getVehicleStatusUsingValidation(
+          booking.id,
+          VehicleStatus.RESERVED
+        );
 
-      //Update booking status to CANCELLED
-      booking.status = BookingStatus.CANCELLED;
-      await this.bookingRepo.updateById(bookingId, booking);
+        //Update booking status to CANCELLED
+        booking.status = BookingStatus.CANCELLED;
+        await this.bookingRepo.updateById(bookingId, booking);
 
-      //Update vehicle status to AVAILABLE
-      vehicle.status = VehicleStatus.AVAILABLE;
-      await this.vehicleRepo.updateById(vehicle.id, vehicle);
+        //Update vehicle status to AVAILABLE
+        vehicle.status = VehicleStatus.AVAILABLE;
+        await this.vehicleRepo.updateById(vehicle.id, vehicle);
 
-      const notificationContext = new NotificationContext(
-        booking.userId,
-        NotificationType.EMAIL
-      );
-      this.notificationService.sendNotificationToOne(
-        `User[id: ${booking.userId}] Booking[id: ${bookingId}] 
+        const notificationContext = new NotificationContext(
+          booking.userId,
+          NotificationType.EMAIL
+        );
+        this.notificationService.sendNotificationToOne(
+          `User[id: ${booking.userId}] Booking[id: ${bookingId}] 
             Booking Cancelled`,
-        notificationContext,
-        booking.userId
-      );
+          notificationContext,
+          booking.userId
+        );
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.cancelBooking.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async pickUpVehicle(barCode: string): Promise<void> {
-      const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
-      if (!bookingId) throw new Error(`BarCode not found`);
+      await this.lock.acquire();
+      try {
+        const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
+        if (!bookingId) throw new Error(`BarCode not found`);
 
-      //Get booking with status CONFIRMED
-      const booking = await this.getBookingStatusUsingValidation(
-        bookingId,
-        BookingStatus.CONFIRMED
-      );
-      //Get Vehicle with status RESERVED
-      const vehicle = await this.getVehicleStatusUsingValidation(
-        booking.vehicleId,
-        VehicleStatus.RESERVED
-      );
-      //Update vehicle status to RENTED
-      vehicle.status = VehicleStatus.RENTED;
-      await this.vehicleRepo.updateById(vehicle.id, vehicle);
+        //Get booking with status CONFIRMED
+        const booking = await this.getBookingStatusUsingValidation(
+          bookingId,
+          BookingStatus.CONFIRMED
+        );
+        //Get Vehicle with status RESERVED
+        const vehicle = await this.getVehicleStatusUsingValidation(
+          booking.vehicleId,
+          VehicleStatus.RESERVED
+        );
+        //Update vehicle status to RENTED
+        vehicle.status = VehicleStatus.RENTED;
+        await this.vehicleRepo.updateById(vehicle.id, vehicle);
 
-      const notificationContext = new NotificationContext(
-        booking.userId,
-        NotificationType.EMAIL
-      );
-      this.notificationService.sendNotificationToOne(
-        `User[id: ${booking.userId}] Booking[id: ${bookingId}] Vehicle[id: ${booking.vehicleId}] 
+        const notificationContext = new NotificationContext(
+          booking.userId,
+          NotificationType.EMAIL
+        );
+        this.notificationService.sendNotificationToOne(
+          `User[id: ${booking.userId}] Booking[id: ${bookingId}] Vehicle[id: ${booking.vehicleId}] 
             Vehicle picked up`,
-        notificationContext,
-        booking.userId
-      );
+          notificationContext,
+          booking.userId
+        );
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.pickUpVehicle.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async returnVehicle(barCode: string): Promise<void> {
-      const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
-      if (!bookingId) throw new Error(`BarCode not found`);
+      await this.lock.acquire();
+      try {
+        const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
+        if (!bookingId) throw new Error(`BarCode not found`);
 
-      //Get booking with status CONFIRMED
-      const booking = await this.getBookingStatusUsingValidation(
-        bookingId,
-        BookingStatus.CONFIRMED
-      );
-      //Get Vehicle with status RENTED
-      const vehicle = await this.getVehicleStatusUsingValidation(
-        booking.vehicleId,
-        VehicleStatus.RENTED,
-        `Vehicle is not even rented`
-      );
+        //Get booking with status CONFIRMED
+        const booking = await this.getBookingStatusUsingValidation(
+          bookingId,
+          BookingStatus.CONFIRMED
+        );
+        //Get Vehicle with status RENTED
+        const vehicle = await this.getVehicleStatusUsingValidation(
+          booking.vehicleId,
+          VehicleStatus.RENTED,
+          `Vehicle is not even rented`
+        );
 
-      //Update vehicle status to AVAILABLE
-      vehicle.status = VehicleStatus.AVAILABLE;
-      await this.vehicleRepo.updateById(vehicle.id, vehicle);
+        //Update vehicle status to AVAILABLE
+        vehicle.status = VehicleStatus.AVAILABLE;
+        await this.vehicleRepo.updateById(vehicle.id, vehicle);
 
-      const notificationContext = new NotificationContext(
-        booking.userId,
-        NotificationType.EMAIL
-      );
-      this.notificationService.sendNotificationToOne(
-        `User[id: ${booking.userId}] Booking[id: ${bookingId}] Vehicle[id: ${vehicle.id}] 
+        const notificationContext = new NotificationContext(
+          booking.userId,
+          NotificationType.EMAIL
+        );
+        this.notificationService.sendNotificationToOne(
+          `User[id: ${booking.userId}] Booking[id: ${bookingId}] Vehicle[id: ${vehicle.id}] 
             Vehicle returned`,
-        notificationContext,
-        booking.userId
-      );
+          notificationContext,
+          booking.userId
+        );
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.returnVehicle.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
 
     async completePayment(
       barCode: string,
       paymentContext: PaymentContext
     ): Promise<void> {
-      const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
-      if (!bookingId) throw new Error(`BarCode not found`);
+      await this.lock.acquire();
+      try {
+        const bookingId = await this.bookingRepo.getBookingIdByBarCode(barCode);
+        if (!bookingId) throw new Error(`BarCode not found`);
 
-      //Get booking with status CONFIRMED
-      const booking = await this.getBookingStatusUsingValidation(
-        bookingId,
-        BookingStatus.CONFIRMED
-      );
-      //Get Vehicle with status AVAILABLE
-      const vehicle = await this.getVehicleStatusUsingValidation(
-        booking.vehicleId,
-        VehicleStatus.AVAILABLE
-      );
-
-      //Calculate fees
-      const returnDate = new Date();
-      const fees = this.calculateFees(
-        vehicle.charge,
-        returnDate.getTime(),
-        booking.startDate,
-        booking.endDate
-      );
-
-      //Call PaymentService to
-      const paymentId = await this.paymentService.pay(
-        fees.totalFees,
-        paymentContext,
-        bookingId
-      ); //status is generally given by web
-      if (!paymentId)
-        throw new Error(
-          `Failed to process payment for paymentId: ${paymentId}`
+        //Get booking with status CONFIRMED
+        const booking = await this.getBookingStatusUsingValidation(
+          bookingId,
+          BookingStatus.CONFIRMED
         );
-      booking.status = BookingStatus.COMPLETED;
-      await this.bookingRepo.updateById(bookingId, booking);
+        //Get Vehicle with status AVAILABLE
+        const vehicle = await this.getVehicleStatusUsingValidation(
+          booking.vehicleId,
+          VehicleStatus.AVAILABLE
+        );
 
-      const notificationContext = new NotificationContext(
-        booking.userId,
-        NotificationType.EMAIL
-      );
-      this.notificationService.sendNotificationToOne(
-        `User[id: ${booking.userId}] Booking[id: ${bookingId}] Payment[id: ${paymentId}]
+        //Calculate fees
+        const returnDate = new Date();
+        const fees = this.calculateFees(
+          vehicle.charge,
+          returnDate.getTime(),
+          booking.startDate,
+          booking.endDate
+        );
+
+        //Call PaymentService to
+        const paymentId = await this.paymentService.pay(
+          fees.totalFees,
+          paymentContext,
+          bookingId
+        ); //status is generally given by web
+        if (!paymentId)
+          throw new Error(
+            `Failed to process payment for paymentId: ${paymentId}`
+          );
+        booking.status = BookingStatus.COMPLETED;
+        await this.bookingRepo.updateById(bookingId, booking);
+
+        const notificationContext = new NotificationContext(
+          booking.userId,
+          NotificationType.EMAIL
+        );
+        this.notificationService.sendNotificationToOne(
+          `User[id: ${booking.userId}] Booking[id: ${bookingId}] Payment[id: ${paymentId}]
             Payment successful`,
-        notificationContext,
-        booking.userId
-      );
+          notificationContext,
+          booking.userId
+        );
+      } catch (error) {
+        throw new Error(`[${BookingService.name}] ${this.completePayment.name}
+          : ${error.message}`);
+      } finally {
+        this.lock.release();
+      }
     }
     async returnVehicleAndPay(
       barCode: string,
@@ -785,8 +894,8 @@ namespace CarRentalSystem {
       await this.returnVehicle(barCode);
       await this.completePayment(barCode, paymentContext);
     }
-    //### End ###
 
+    //### Utility Methods ###
     private async getVehicleStatusUsingValidation(
       vehicleId: string,
       requiredStatus: VehicleStatus,
@@ -847,7 +956,7 @@ namespace CarRentalSystem {
     const vehicleRepo = new VehicleRepository();
     const bookingRepo = new BookingRepository();
     const paymentRepo = new PaymentRepository();
-    
+
     const notificationService = new NotificationService();
     const paymentService = new PaymentService(paymentRepo);
 
@@ -857,8 +966,7 @@ namespace CarRentalSystem {
       vehicleRepo,
       bookingRepo,
       paymentService,
-      notificationService,
-
+      notificationService
     );
 
     // Create a user
