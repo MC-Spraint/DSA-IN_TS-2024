@@ -1,6 +1,6 @@
 namespace CarRentalSystem {
   function generateId() {
-    const id = Date.now() + Math.floor(Math.random() * 1000);
+    const id = Math.floor(Math.random() * (9999 - 1111 + 4)) + 1111;
     return String(id);
   }
   class DataPool {
