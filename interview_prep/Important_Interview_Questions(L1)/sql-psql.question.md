@@ -93,7 +93,7 @@ ACID stands for Atomicity, Consistency, Isolation, and Durability, which are the
 The TRANSACTION keyword is used to define a set of SQL statements that are treated as a single unit of work. It ensures data consistency and integrity by allowing changes to be rolled back if an error occurs.
 
 ```postgresql
--- Perform database operations
+-- Perform database operations 
 BEGIN TRANSACTION;
 
 -- Perform database operations
