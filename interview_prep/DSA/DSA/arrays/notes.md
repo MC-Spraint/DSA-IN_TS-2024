@@ -88,6 +88,18 @@ To the left: a reverse function is needed first, then the array is reversed
 
 
 #### [15] Search In A Rotated Array
+//As long as l not greater than r
+    //find m = Math.floor((l + r) / 2)
+    //Check if target is m
+
+    //Check if l to m in asc
+        //Check if left in asc
+        //Check in right part
+    //Else
+        //Check in right part
+        //Check in left part
+
+
 
 #### [16] Maximum Sub-array sum
 

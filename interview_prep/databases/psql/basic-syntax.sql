@@ -146,5 +146,3 @@ CREATE TABLE employees (
     ON DELETE SET NULL                           -- FOREIGN KEY constraint with ON DELETE action
     ON UPDATE CASCADE                            -- FOREIGN KEY constraint with ON UPDATE action
 );
-
-

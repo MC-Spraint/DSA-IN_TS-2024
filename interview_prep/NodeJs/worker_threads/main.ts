@@ -4,8 +4,8 @@ import * as express from "express";
 import * as http from "http";
 import * as path from "path";
 import { Worker } from "worker_threads";
-
 const app = express();
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -31,7 +31,7 @@ app.post("/process-image", (req, res) => {
     } else {
       res.status(500).json({ error: result.error });
     }
-  });
+  });q
 
   // Handle errors from the worker thread
   worker.on("error", (error) => {

@@ -210,4 +210,24 @@ function greet() {
   const calculate = compose(
     subtract(10),
     multiply(2),
-  
+  );
+    
+// console.log("false - '2': ",
+//   false - '2')
+// console.log("2 - false: ",
+//   2 - false)
+// console.log("true > 0: ",
+//   true > 0)
+// console.log("false < true: ",
+//   false < true)
+// console.log("false > true: ",
+//   false > true)
+// console.log("0 == false: ",
+//   0 == false) 
+// console.log("'0' == false: ",
+//   '0' == false)
+// console.log("'0' == true: " , 
+//   '0' == true)
+// console.log('2' + 2 - true - true)
+// console.log('0' + 0)
+// console.log(0 + '0')

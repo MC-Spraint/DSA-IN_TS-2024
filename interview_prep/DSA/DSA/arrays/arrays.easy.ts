@@ -89,16 +89,16 @@ export class ArraysEasy {
     let ceil = Number.MAX_SAFE_INTEGER;
 
     nums.forEach((curr, i, arr) => {
-      const isCurrInPlaceOf = (target: number) => i === arr.indexOf(target);
+      const isCurrNotInPlaceOf = (target: number) => i !== arr.indexOf(target);
 
       //find floor
       const isInOrderFloorCurrMax = floor < curr && curr < target;
-      if (!isCurrInPlaceOf(target) && isInOrderFloorCurrMax) {
+      if (isCurrNotInPlaceOf(target) && isInOrderFloorCurrMax) {
         floor = curr;
       }
       //find ceil
       const isInOrderMinCurrCeil = target < curr && curr < ceil;
-      if (!isCurrInPlaceOf(target) && isInOrderMinCurrCeil) {
+      if (isCurrNotInPlaceOf(target) && isInOrderMinCurrCeil) {
         ceil = curr;
       }
     });
@@ -122,15 +122,15 @@ export class ArraysEasy {
     let ceil = Number.MAX_SAFE_INTEGER;
 
     nums.forEach((curr, i, arr) => {
-      const isCurrInPlaceOf = (target: number) => i === arr.indexOf(target);
+      const isCurrNotInPlaceOf = (target: number) => i !== arr.indexOf(target);
 
       //find 2nd largest
       const isInOrderFloorCurrMax = floor < curr && curr < max;
-      if (!isCurrInPlaceOf(max) && isInOrderFloorCurrMax) floor = curr;
+      if (isCurrNotInPlaceOf(max) && isInOrderFloorCurrMax) floor = curr;
 
       //find 2nd smallest
       const isInOrderMinCurrCeil = min < curr && curr < ceil;
-      if (!isCurrInPlaceOf(min) && isInOrderMinCurrCeil) ceil = curr;
+      if (isCurrNotInPlaceOf(min) && isInOrderMinCurrCeil) ceil = curr;
     });
 
     return [ceil, floor];
@@ -163,13 +163,15 @@ export class ArraysEasy {
     while (l <= r) {
       const m = Math.floor((l + r) / 2);
       if (nums[m] === target) return m;
-
+      //If leftt-mid in asc
       if (nums[l] <= nums[m]) {
+        //if target in left
         if (nums[l] <= target && target < nums[m]) r = m - 1;
         else l = m + 1;
       } else {
-        if (nums[m] < target && target <= nums[r]) l = m + 1;
-        else r = m - 1;
+        //If target in right
+        if (nums[l] <= target && target < nums[m]) r = m - 1;
+        else l = m + 1;
       }
     }
     return -1;
@@ -187,7 +189,6 @@ export class ArraysEasy {
       output[i] *= product;
       product *= nums[i];
     }
-
     return output;
   }
   /**[13]*/
