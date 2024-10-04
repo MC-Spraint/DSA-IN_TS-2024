@@ -6,7 +6,7 @@ An Immediately Invoked Function Expression (IIFE) is a JavaScript function that 
 
 ### [2] Promise Chaining:
 
-Promise chaining is a technique in JavaScript that involves chaining multiple promises together to **handle a sequence of asynchronous operations** in a more readable and organized manner. It is a way to express a series of asynchronous tasks one after the other, making the code easier to understand and maintain.
+Promise chaining is a technique in JavaScript that involves chaining multiple promises together to handle a **sequence of asynchronous operations** in a more readable and organized manner. It is a way to express a series of asynchronous tasks one after the other, making the code easier to understand and maintain.
 
 ### [3] Closure:
 

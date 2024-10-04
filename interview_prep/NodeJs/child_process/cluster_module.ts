@@ -4,16 +4,18 @@ import { cpus } from 'os';
 import express from 'express';
 import routes from './routes.js'; // Import the routes
 
-const numCPUs = cpus().length;
+
 
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
   // Fork workers
+  const numCPUs = cpus().length;
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
+  //If process exits restart 
   cluster.on('exit', (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died`);
     cluster.fork(); // Restart the worker

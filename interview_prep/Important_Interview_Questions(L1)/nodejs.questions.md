@@ -145,9 +145,24 @@ In Node.js, polling refers to the process of periodically checking for changes o
 
 In Node.js, control flow refers to the order in which statements and functions are executed in your code. Node.js operates on a single-threaded, event-driven model, which means that it executes JavaScript code in a non-blocking, asynchronous manner.
 
-#### [26] Call-Stack
+#### [26] Call-Stack Vs Callback-queue
 
-In Node.js, the call stack is a data structure that tracks the execution of functions in a program. It keeps track of the sequence of function calls that are currently being executed, allowing the JavaScript runtime to manage function invocation and control flow.
+##### Call-stack
+The call stack is a data structure that tracks the execution of functions calls that are currently being executed allowing the JavaScript runtime to manage function invocation and control flow.
+
+When a function is invoked, it is pushed onto the top of the call stack.
+
+When the function is finished executing, it is popped out of the stack.
+
+The call stack handles synchronous operations. If an operation is blocking it can freeze the call stack causing the program to become unresponsive.
+
+##### Callback-queue
+
+When an asynchronous operation is done executing, it's callback is pushed into a callback-queue awaiting to be either rejected or fullfiled by the event-lopp.
+
+Once the call stack is empty, the event loop takes a callback from the queue and pushes it to the call stack for execution.
+
+The callback queue is primarily responsible for handling asynchronous operations.
 
 #### [27] Tracing
 

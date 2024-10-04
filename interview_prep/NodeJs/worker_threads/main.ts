@@ -31,7 +31,7 @@ app.post("/process-image", (req, res) => {
     } else {
       res.status(500).json({ error: result.error });
     }
-  });q
+  });
 
   // Handle errors from the worker thread
   worker.on("error", (error) => {
