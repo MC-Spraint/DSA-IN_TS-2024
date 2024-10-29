@@ -1,5 +1,3 @@
-
-import * as util from "util";
 import * as fs from "fs";
 import * as path from "path";
 import { PassThrough } from "stream";
@@ -11,7 +9,7 @@ async function getFileStream(relativePath: string): Promise<PassThrough> {
   try {
     const fileStream = fs.createReadStream(filePath, {
       encoding: "utf-8",
-    }) as any;
+    });
 
     fileStream.pipe(passThrough);
 
@@ -32,7 +30,7 @@ async function getFileStream(relativePath: string): Promise<PassThrough> {
 }
 
 // Example usage:
-async function fileStreamUsage() {
+async function streamJSON() {
   try {
     const filePassThrough = await getFileStream("../public/banners.json");
 
@@ -46,6 +44,6 @@ async function fileStreamUsage() {
     console.error("Error:", error);
   }
 }
-fileStreamUsage();
+streamJSON();
 
 

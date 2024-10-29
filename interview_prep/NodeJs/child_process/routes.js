@@ -19,11 +19,11 @@ router.post('/', (req, res) => {
 
   child.send({ number });
 
-  child.on('message', (result) => {
-    if (result.error) {
-      res.status(500).send({ error: result.error });
+  child.on('message', (data) => {
+    if (data.error) {
+      res.status(500).send({ error: data.error });
     } else {
-      res.status(200).send({ result });
+      res.status(200).send({ data });
     }
   });
 

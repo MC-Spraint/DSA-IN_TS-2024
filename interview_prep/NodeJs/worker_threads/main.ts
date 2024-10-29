@@ -22,16 +22,16 @@ app.post("/process-image", (req, res) => {
   worker.postMessage({ imageBuffer });
 
   // Listen for messages from the worker thread
-  worker.on("message", (result) => {
-    if (result.success) {
-      const { outputBuffer } = result;
+  worker.on("message", (data) => {
+    if (data.success) {
+      const { outputBuffer } = data;
       // Assuming the processed image is sent back as a buffer
       res.writeHead(200, { "Content-Type": "image/jpeg" });
       res.end(outputBuffer);
     } else {
-      res.status(500).json({ error: result.error });
+      res.status(500).json({ error: data.error });
     }
-  });
+  }); 
 
   // Handle errors from the worker thread
   worker.on("error", (error) => {

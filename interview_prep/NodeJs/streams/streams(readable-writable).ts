@@ -1,8 +1,25 @@
-import express from 'express';
+// src/index.ts
+import express, { Request, Response } from "express";
 import fs from 'fs';
 import path from 'path';
-import multer from 'multer';
+import multer, { FileFilterCallback } from "multer";
 
+// File filter function to validate file types (optional)
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
+  const filetypes = /jpeg|jpg|png|gif/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only images are allowed!"));
+  }
+};
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -12,7 +29,12 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+// Initialize multer with the storage engine and file filter
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // File size limit: 5MB
+});
 
 const app = express();
 const port = 3000;

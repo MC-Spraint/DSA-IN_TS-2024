@@ -18,19 +18,23 @@ export class ThreadPool {
     for (let i = 0; i < this.poolSize; i++) {
       const worker = new Worker(path.resolve(__dirname, "./worker.ts"));
 
-      worker.on("message", (message) => {
-        console.log("Received message from worker:", message);
-        const { taskId, result } = message;
-        const taskIndex = this.taskQueue.findIndex(
-          (task) => task.id === taskId
-        );
-        if (taskIndex !== -1) {
-          const { resolve } = this.taskQueue[taskIndex];
-          resolve(result);
-          this.taskQueue.splice(taskIndex, 1);
+      worker.on("message", (data) => {
+        if (data.success) {
+          console.log("Received message from worker:", data);
+          const { taskId, result } = data;
+          const taskIndex = this.taskQueue.findIndex(
+            (task) => task.id === taskId
+          );
+          if (taskIndex !== -1) {
+            const { resolve } = this.taskQueue[taskIndex];
+            resolve(result);
+            this.taskQueue.splice(taskIndex, 1);
+          } else {
+            console.error(`Task with ID ${taskId} not found in task queue`);
+            // Optionally handle cases where the task is not found
+          }
         } else {
-          console.error(`Task with ID ${taskId} not found in task queue`);
-          // Optionally handle cases where the task is not found
+          console.error(data.error);
         }
       });
       worker.on("exit", (code) => {

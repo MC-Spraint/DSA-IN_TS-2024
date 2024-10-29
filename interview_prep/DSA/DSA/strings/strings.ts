@@ -1,4 +1,19 @@
 export class Strings {
+// str = "newyorkcitynewyorkcitynewyorkcitycitynewyorkcitycitycitynewyorkcity", 
+// target = newyork
+// Question: How many times "newyork" character appears?
+
+public countOccurrences(str, target) {
+  if (str.length < target.length) {
+    return 0;
+  }
+
+  if (str.startsWith(target)) {
+    return 1 + this.countOccurrences(str.slice(target.length), target);
+  } else {
+    return this.countOccurrences(str.slice(1), target);
+  }
+}
   /**[array method 1] */
   public reverse(s: string): string {
     if (!s) return "";
