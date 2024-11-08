@@ -210,35 +210,12 @@ public fullJustify(words: string[], maxWidth: number): string[] {
     }
     return n;
   }
-  /**[9] */
-  static romanToInt1(s: string): number {
-    const arr: [string, number][] = [
-      ["I", 1],
-      ["V", 5],
-      ["X", 10],
-      ["L", 50],
-      ["C", 100],
-      ["D", 500],
-      ["M", 1000],
-    ];
-
-    let n = this.getVal(s[0], arr)!;
-    for (let i = 1; i < s.length; i++) {
-      const [curr, prev] = [
-        this.getVal(s[i], arr)!,
-        this.getVal(s[i - 1], arr)!,
-      ];
-      if (curr <= prev) n += curr;
-      else n += curr - 2 * prev;
-    }
-    return n;
-  }
   static getVal(char: string, arr: [string, number][]): number {
     for (let a of arr) if (a[0] === char) return a[1];
     return 0;
   }
 
-  /**[10] */
+  /**[9] */
   static intToRoman(num: number) {
     const romanNumerals = new Map([
       [1, "I"],
@@ -267,6 +244,59 @@ public fullJustify(words: string[], maxWidth: number): string[] {
     }
     return result;
   }
+  /**[10] */
+  public compressString(s: string): string {
+    let compressed = "";
+    let count = 1;
+
+    for (let i = 1; i < s.length; i++) {
+        if (s[i] === s[i - 1]) {
+            count++;
+        } else {
+            compressed += `${s[i - 1]}${(count > 1 ? count : "")}`;
+            count = 1;
+        }
+    }
+    compressed += s[s.length - 1] + (count > 1 ? count : "");
+    return compressed.length < s.length ? compressed : s;
+}
+}
+
+
+function isRotation(str1: string, str2: string): boolean {
+  if (str1.length !== str2.length) return false;
+  const concatenated = str1 + str1;
+  return concatenated.includes(str2);
+}
+function firstNonRepeatingChar(str: string): string {
+  const charCount = {};
+  for (let char of str) {
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
+  for (let char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+  return "";
+}
+function uniquePaths(m: number, n: number): number {
+  const dp: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
+
+  for (let i = 0; i < m; i++) {
+    dp[i][0] = 1;
+  }
+  for (let j = 0; j < n; j++) {
+    dp[0][j] = 1;
+  }
+
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    }
+  }
+
+  return dp[m - 1][n - 1];
 }
 function fullJustify(words: string[], maxWidth: number): string[] {
   let res: string[] = [];
@@ -305,55 +335,4 @@ function fullJustify(words: string[], maxWidth: number): string[] {
   let trailingSpace = maxWidth - lastLine.length;
   res.push(lastLine + " " + trailingSpace);
   return res;
-}
-
-function compressString(s: string): string {
-    let compressed = "";
-    let count = 1;
-
-    for (let i = 1; i < s.length; i++) {
-        if (s[i] === s[i - 1]) {
-            count++;
-        } else {
-            compressed += `${s[i - 1]}${(count > 1 ? count : "")}`;
-            count = 1;
-        }
-    }
-    compressed += s[s.length - 1] + (count > 1 ? count : "");
-    return compressed.length < s.length ? compressed : s;
-}
-function isRotation(str1: string, str2: string): boolean {
-  if (str1.length !== str2.length) return false;
-  const concatenated = str1 + str1;
-  return concatenated.includes(str2);
-}
-function firstNonRepeatingChar(str: string): string {
-  const charCount = {};
-  for (let char of str) {
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-  return "";
-}
-function uniquePaths(m: number, n: number): number {
-  const dp: number[][] = Array.from({ length: m }, () => Array(n).fill(0));
-
-  for (let i = 0; i < m; i++) {
-    dp[i][0] = 1;
-  }
-  for (let j = 0; j < n; j++) {
-    dp[0][j] = 1;
-  }
-
-  for (let i = 1; i < m; i++) {
-    for (let j = 1; j < n; j++) {
-      dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-    }
-  }
-
-  return dp[m - 1][n - 1];
 }
