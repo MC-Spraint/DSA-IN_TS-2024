@@ -1,19 +1,35 @@
 export class Strings {
-// str = "newyorkcitynewyorkcitynewyorkcitycitynewyorkcitycitycitynewyorkcity", 
-// target = newyork
-// Question: How many times "newyork" character appears?
+  public occurenceOfSubstr(s: string, occurence: string) {
+    if (s.length < occurence.length) {
+      return 0;
+    }
 
-public countOccurrences(str, target) {
-  if (str.length < target.length) {
-    return 0;
+    if (s.startsWith(occurence)) {
+      return 1 + this.occurenceOfSubstr(s.slice(occurence.length), occurence);
+    } else {
+      return this.occurenceOfSubstr(s.slice(1), occurence);
+    }
   }
 
-  if (str.startsWith(target)) {
-    return 1 + this.countOccurrences(str.slice(target.length), target);
-  } else {
-    return this.countOccurrences(str.slice(1), target);
+  public countNumLettSymb(str: string) {
+    let map: Map<string, number> = new Map<string, number>([
+      ["Number", 0],
+      ["Letter", 0],
+      ["Symbols", 0],
+    ]);
+
+    for (const char of str) {
+      if (/[0-9]/g.test(char)) {
+        map.set("Number", (map.get("Number")! || 0) + 1);
+      } else if (/[a-zA-Z]/g.test(char)) {
+        map.set("Letter", (map.get("Letter")! || 0) + 1);
+      } else {
+        if (/[^a-zA-Z0-9\s]g/.test(char))
+          map.set("Symbols", (map.get("Symbols")! || 0) + 1);
+      }
+    }
+    return map;
   }
-}
   /**[array method 1] */
   public reverse(s: string): string {
     if (!s) return "";
@@ -46,7 +62,7 @@ public countOccurrences(str, target) {
     if (str === "") {
       return 0;
     } else {
-      let spaceIndex = str.indexOf(" ");
+      const spaceIndex = str.indexOf(" ");
       if (spaceIndex === -1) return 1; // Only one word is left
       else return 1 + this.countWords(str.slice(spaceIndex + 1));
     }
@@ -64,38 +80,42 @@ public countOccurrences(str, target) {
 
   /**[5] */
   public longestCommonPrefix(strs: string[]) {
-    let ns: string = "";
-    let i = 0,
-      maxLen = 0;
-    for (let e of strs) maxLen = Math.max(i, e.length);
-    while (i !== maxLen) {
+    let minLen = strs[0].length;
+    strs.forEach((s) => {
+      minLen = Math.min(minLen, s.length);
+    });
+
+    let commonPrefix: string = "";
+    for (let i = 0; i <= minLen; i++) {
       let na: string[] = [];
-      for (let j = 0; j < strs.length; j++)
+      for (let j = 0; j < strs.length; j++) {
         if (strs[0][i] === strs[j][i]) na.push(strs[j][i]);
-      if (na.length !== strs.length) return ns;
+      }
+      if (na.length !== strs.length) {
+        return commonPrefix;
+      }
       const [common] = na;
-      if (common) ns += common;
-      i++;
+      if (common) commonPrefix += common;
     }
-    return ns;
+    return commonPrefix;
   }
   /**[6] */
   public longestCommonSubstring(str1: string, str2: string): string {
-    let longest = '';
+    let longest = "";
     for (let i = 0; i < str1.length; i++) {
-        for (let j = 0; j < str2.length; j++) {
-            let k = 0;
-            while (str1[i + k] && str2[j + k] && str1[i + k] === str2[j + k]) {
-                k++;
-            }
-            if (k > longest.length) {
-                longest = str1.slice(i, i + k);
-            }
+      for (let j = 0; j < str2.length; j++) {
+        let k = 0;
+        while (str1[i + k] && str2[j + k] && str1[i + k] === str2[j + k]) {
+          k++;
         }
+        if (k > longest.length) {
+          longest = str1.slice(i, i + k);
+        }
+      }
     }
     return longest;
   }
-  public longestSubstring(s: string): string {
+  public longestSubstringWithoutRepeatingChars(s: string): string {
     const map: Map<string, number> = new Map();
     let maxLength = 0;
     let start = 0;
@@ -103,58 +123,73 @@ public countOccurrences(str, target) {
     let longestEnd = 0;
 
     for (let end = 0; end < s.length; end++) {
-        if (map.has(s[end])) {
-            start = Math.max(map.get(s[end])! + 1, start);
-        }
-        map.set(s[end], end);
-        if (end - start + 1 > maxLength) {
-            maxLength = end - start + 1;
-            longestStart = start;
-            longestEnd = end;
-        }
+      if (map.has(s[end])) {
+        start = Math.max(map.get(s[end])! + 1, start);
+      }
+      map.set(s[end], end);
+      if (end - start + 1 > maxLength) {
+        maxLength = end - start + 1;
+        longestStart = start;
+        longestEnd = end;
+      }
     }
 
     return s.slice(longestStart, longestEnd + 1);
-}
+  }
 
   /**[7] */
-  public fullJustify(words: string[], maxWidth: number): string[] {
-    const res: string[] = [];
-    let line: string[] = [];
-    let len = 0;
 
-    words.forEach((word) => {
-      if (len + word.length + line.length > maxWidth) {
-        res.push(this.justifyLine(line, len, maxWidth));
-        line = [];
-        len = 0;
+// Input: words = ["This", "is", "an", "example", "of", "text", "justification."], width = 16
+// Output: [   "This    is    an",   "example  of text",   "justification.  "]
+private distributeSpacesInline(inlineWords: string[], charCountOfInlineWords: number, maxWidth: number): string {
+  const totalSpaces = maxWidth - charCountOfInlineWords;
+  const slots = inlineWords.length - 1;
+  //No slot between words means the inlineWords has a single word
+  if(slots === 0) return inlineWords[0] + " ".repeat(totalSpaces);
+
+  //Calculate distribution of 'spacesPerGap' and 'extraSpaces' if distribution is not evenly
+  const spacesPerGap = Math.floor(totalSpaces / slots);
+  let extraSpaces = totalSpaces % slots;
+  
+  //Construct the string from the inlineWords
+  return inlineWords.reduce((str, word, i) => {
+      //If it's the last word, add it and return
+      if (i === inlineWords.length - 1) return str + word;
+      //Before adding the 'extraSpaces' to the end of a word if it is more than 1, reduce it by 1
+      /*
+      Because If the number of spaces on a inlineWords does not divide evenly between words,
+      the empty slots on the left will be assigned more spaces than the slots on the right.(Mentioned)
+      */
+      return str + word + " ".repeat(spacesPerGap + (extraSpaces -- > 0 ? 1 : 0));
+  }, "");
+}
+private leftJustifyLine(inlineWords: string[], maxWidth: number): string {
+  const line = inlineWords.join(" ");
+  return line + " ".repeat(maxWidth - line.length);
+}
+public fullJustify(words: string[], maxWidth: number): string[] {
+  const res: string[] = [];
+  
+  let inlineWords: string[] = [];
+  let charCountOfInlineWords = 0;
+  words.forEach((word) => {
+      
+      //Length of (previous words + new word + spaces in between)
+      if ((charCountOfInlineWords + word.length + inlineWords.length > maxWidth)) {
+          res.push(this.distributeSpacesInline(inlineWords, charCountOfInlineWords, maxWidth));
+        
+          inlineWords = [];
+          charCountOfInlineWords = 0;
       }
-      line.push(word);
-      len += word.length;
-    });
-    res.push(this.leftJustifyLine(line, maxWidth));
-    return res;
-  }
+      inlineWords.push(word);
+      charCountOfInlineWords += word.length;
+  });
+  res.push(this.leftJustifyLine(inlineWords, maxWidth));
+  
+  return res;
+}
+
   /**[8] */
-  private justifyLine(line: string[], len: number, maxWidth: number): string {
-    const spaces = maxWidth - len;
-    const gaps = line.length - 1;
-    if (gaps === 0) return line[0] + " ".repeat(spaces);
-
-    const spacesPerGap = Math.floor(spaces / gaps);
-    let extraSpaces = spaces % gaps;
-    return line.reduce((str, word, i) => {
-      if (i === line.length - 1) return str + word;
-      const gap = spacesPerGap + (extraSpaces-- > 0 ? 1 : 0);
-      return str + word + " ".repeat(gap);
-    }, "");
-  }
-
-  public leftJustifyLine(line: string[], maxWidth: number): string {
-    const lastLine = line.join(" ");
-    return lastLine + " ".repeat(maxWidth - lastLine.length);
-  }
-  /**[9] */
   static romanToInt(s: string): number {
     const map = new Map<string, number>([
       ["I", 1],
@@ -175,7 +210,7 @@ public countOccurrences(str, target) {
     }
     return n;
   }
-  /**[10] */
+  /**[9] */
   static romanToInt1(s: string): number {
     const arr: [string, number][] = [
       ["I", 1],
@@ -203,7 +238,7 @@ public countOccurrences(str, target) {
     return 0;
   }
 
-  /**[11] */
+  /**[10] */
   static intToRoman(num: number) {
     const romanNumerals = new Map([
       [1, "I"],
@@ -222,7 +257,6 @@ public countOccurrences(str, target) {
     ]);
 
     let result = "";
-
     const values = Array.from(romanNumerals.keys()).reverse();
 
     for (const value of values) {
@@ -231,11 +265,8 @@ public countOccurrences(str, target) {
         num -= value;
       }
     }
-
     return result;
   }
-
-
 }
 function fullJustify(words: string[], maxWidth: number): string[] {
   let res: string[] = [];
@@ -276,18 +307,20 @@ function fullJustify(words: string[], maxWidth: number): string[] {
   return res;
 }
 
-function compressString(str: string): string {
-  let compressed = '';
-  let count = 1;
-  for (let i = 0; i < str.length; i++) {
-      if (str[i] === str[i + 1]) {
-          count++;
-      } else {
-          compressed += `${str[i]}${count}`;
-          count = 1;
-      }
-  }
-  return compressed.length < str.length ? compressed : str;
+function compressString(s: string): string {
+    let compressed = "";
+    let count = 1;
+
+    for (let i = 1; i < s.length; i++) {
+        if (s[i] === s[i - 1]) {
+            count++;
+        } else {
+            compressed += `${s[i - 1]}${(count > 1 ? count : "")}`;
+            count = 1;
+        }
+    }
+    compressed += s[s.length - 1] + (count > 1 ? count : "");
+    return compressed.length < s.length ? compressed : s;
 }
 function isRotation(str1: string, str2: string): boolean {
   if (str1.length !== str2.length) return false;
@@ -297,14 +330,14 @@ function isRotation(str1: string, str2: string): boolean {
 function firstNonRepeatingChar(str: string): string {
   const charCount = {};
   for (let char of str) {
-      charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
   for (let char of str) {
-      if (charCount[char] === 1) {
-          return char;
-      }
+    if (charCount[char] === 1) {
+      return char;
+    }
   }
-  return '';
+  return "";
 }
 function uniquePaths(m: number, n: number): number {
   const dp: number[][] = Array.from({ length: m }, () => Array(n).fill(0));

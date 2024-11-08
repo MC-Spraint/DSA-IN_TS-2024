@@ -75,4 +75,30 @@ export class FixedSizeWindow {
 
     return maxConsecutiveOnes;
   }
+  /**[4]*/
+  // replace up to k characters in s to create the longest possible substring where all characters are the same
+  //Input: s = "AABABBA", k = 1
+  //Output: 4  // Replace one 'B' to get "AAAA" or one 'A' to get "BBBB"
+  static characterReplacement(s: string, k: number): number {
+    const charCount = new Map<string, number>();
+    let maxFreq = 0; // Track the highest frequency of a single character in the current window
+    let maxLength = 0;
+
+    for (let l = 0, r = 0; r < s.length; r++) {
+      // Update the count of the current character
+      const rc = s[r];
+      charCount.set(rc, (charCount.get(rc) || 0) + 1);
+      // Update maxFreq based on the current window
+      maxFreq = Math.max(maxFreq, charCount.get(rc)!);
+      // If current window size - maxFreq > k, it's not valid, shrink window from the l
+      while (r - l + 1 > k + maxFreq) {
+        const lc = s[l];
+        charCount.set(lc, charCount.get(lc)! - 1);
+        l++;
+      }
+      // Update maxLength with the size of the valid window
+      maxLength = Math.max(maxLength, r - l + 1);
+    }
+    return maxLength;
+  }
 }
