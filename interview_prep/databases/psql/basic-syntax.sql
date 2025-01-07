@@ -156,12 +156,22 @@ SELECT
 FROM
     employees;
 
+-- Constraints, enum
+CREATE TYPE DEPARTMENT_TYPE AS ENUM (
+    'Sales',
+    'Marketing',
+    'Engineering',
+    'Human Resources',
+    'Finance',
+    'IT',
+    'Customer Support',
+    'Legal',
+    'Operations'
+);
 
--- Constraints
 CREATE TABLE departments (
     department_id SERIAL PRIMARY KEY,
-    department_name VARCHAR(50) NOT NULL,
-    UNIQUE (department_name)
+    department_name DEPARTMENT_TYPE DEFAULT 'Engineering'
 );
 CREATE TABLE employees (
     employee_id SERIAL PRIMARY KEY,  -- PRIMARY KEY and AUTO_INCREMENT
@@ -171,12 +181,15 @@ CREATE TABLE employees (
     hire_date DATE DEFAULT CURRENT_DATE,         -- DEFAULT constraint
     salary DECIMAL(10, 2) CHECK (salary > 0),    -- CHECK constraint
     department_id INT,
-    FOREIGN KEY (department_id) REFERENCES departments(department_id)
-    ON DELETE SET NULL                           -- FOREIGN KEY constraint with ON DELETE action
-    ON UPDATE CASCADE                            -- FOREIGN KEY constraint with ON UPDATE action
+    FOREIGN KEY (department_id) 
+    REFERENCES departments(department_id)
+        ON DELETE SET NULL                           -- FOREIGN KEY constraint with ON DELETE action
+        ON UPDATE CASCADE                            -- FOREIGN KEY constraint with ON UPDATE action
 );
 -- Insert into departments table
-INSERT INTO departments (department_name) VALUES
+INSERT INTO departments
+    (department_name) 
+VALUES
     ('Sales'),
     ('Marketing'),
     ('Engineering'),
@@ -188,7 +201,10 @@ INSERT INTO departments (department_name) VALUES
     ('Operations');
 
 -- Insert into employees table
-INSERT INTO employees (first_name, last_name, email, salary, department_id) VALUES
+INSERT INTO 
+    employees 
+    (first_name, last_name, email, salary, department_id) 
+VALUES
     ('John', 'Doe', 'john.doe@example.com', 500.00, 1),
     ('Brittany', 'Lopez', 'brittany.gomez@example.com', 640.00, 1),
     ('Jane', 'Smith', 'jane.smith@example.com', 600.00, 2),
@@ -224,5 +240,19 @@ SELECT
     FIRST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary DESC) as highest_salary 
 FROM
     employees;
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
