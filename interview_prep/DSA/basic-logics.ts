@@ -1,10 +1,9 @@
 
 function flattenArray(arr: any[]): any[] {
     if (!Array.isArray(arr)) {
-        return [arr]; // Base case: if arr is not an array, return it wrapped in an array
+        return [arr];
     }
-
-    let flattened: any[] = []; 
+    const flattened: any[] = []; 
     arr.forEach(item => {
         flattened.push(...flattenArray(item)); // Recursively flatten nested arrays
     });
@@ -25,8 +24,8 @@ function missingNums(arr: number[]): number[] {
     return missingNumbers;
 }
 function uniqueElements(arr: any[]): any[] {
-    const duplicates = arr.filter((elem, index) => arr.indexOf(elem) !== index);
-    const uniques = arr.filter((elem) => !duplicates.includes(elem));
+    const duplicates = arr.filter((e, i) => arr.indexOf(e) !== i);
+    const uniques = arr.filter((e) => !duplicates.includes(e));
     return uniques;
 }
 
