@@ -174,10 +174,10 @@ CREATE TABLE departments (
     department_name DEPARTMENT_TYPE DEFAULT 'Engineering'
 );
 CREATE TABLE employees (
-    employee_id SERIAL PRIMARY KEY,  -- PRIMARY KEY and AUTO_INCREMENT
+    employee_id SERIAL PRIMARY KEY UNIQUE,  -- PRIMARY KEY and AUTO_INCREMENT
     first_name VARCHAR(50) NOT NULL,             -- NOT NULL constraint
     last_name VARCHAR(50) NOT NULL,              -- NOT NULL constraint
-    email VARCHAR(100) UNIQUE NOT NULL,          -- UNIQUE and NOT NULL constraint
+    email VARCHAR(100) NOT NULL UNIQUE,          -- UNIQUE and NOT NULL constraint
     hire_date DATE DEFAULT CURRENT_DATE,         -- DEFAULT constraint
     salary DECIMAL(10, 2) CHECK (salary > 0),    -- CHECK constraint
     department_id INT,
