@@ -124,14 +124,14 @@ console.log(fcall2()); // Outputs: "att1 - innerProperty"
 
 
 //Explicit binding
-function greet() {
+function greet1() {
     return "Hello, " + this.name + "!";
   }
   
   const person = { name: "Alice" };
-  const greetWithCall = greet.call(person);
-  const greetWithApply = greet.apply(person);
-  const greetWithBind = greet.bind(person);
+  const greetWithCall = greet1.call(person);
+  const greetWithApply = greet1.apply(person);
+  const greetWithBind = greet1.bind(person);
   console.log(greetWithCall()); // Output: Hello, Alice!
   console.log(greetWithApply()); // Output: Hello, Alice!
   console.log(greetWithBind()); // Output: Hello, Alice!
@@ -150,14 +150,14 @@ function greet() {
   */
   
   //[5] Partial Application of bind keyword
-  function greet(greeting, name) {
+  function greet2(greeting, name) {
     return greeting + ', ' + name + '!';
   }
   
   // Partially applying the greet function with the first argument fixed
-  const sayHello = greet.bind(null, "hello");
+  const sayHello = greet2.bind(null, "hello");
   const underTheHoodSayHello = function(name) {
-    return greet.call(null, "hello", name);
+    return greet2.call(null, "hello", name);
   };
   
   
@@ -187,17 +187,17 @@ function greet() {
   //[3] Pipe line composition with 'pipe'
   const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
   
-  const add = x => y => x + y;
+  const addition = x => y => x + y;
   const square = x => x * x;
-  const subtract = x => y => x - y;
+  const subtraction = x => y => x - y;
   
-  const calculate = pipe(
-    add(5),
+  const calculator = pipe(
+    addition(5),
     square,
-    subtract(10)
+    subtraction(10)
   );
   
-  console.log(calculate(7)); // Output: 54 (subtract(square(add(7, 5)), 10))
+  console.log(calculator(7)); // Output: 54 (subtract(square(addition(7, 5)), 10))
   
   
   
@@ -212,22 +212,4 @@ function greet() {
     multiply(2),
   );
     
-// console.log("false - '2': ",
-//   false - '2')
-// console.log("2 - false: ",
-//   2 - false)
-// console.log("true > 0: ",
-//   true > 0)
-// console.log("false < true: ",
-//   false < true)
-// console.log("false > true: ",
-//   false > true)
-// console.log("0 == false: ",
-//   0 == false) 
-// console.log("'0' == false: ",
-//   '0' == false)
-// console.log("'0' == true: " , 
-//   '0' == true)
-// console.log('2' + 2 - true - true)
-// console.log('0' + 0)
-// console.log(0 + '0')
+
