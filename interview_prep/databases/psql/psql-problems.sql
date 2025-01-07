@@ -123,8 +123,8 @@ WHERE
     WHERE
         activity_date
     BETWEEN
-        date '2019-07-27'
-        - interval '29 day' 
+        date '2019-07-27' 
+        - interval '29 day' -- start date meaning 29 days before the current date
     AND
         '2019-07-27'
     )
