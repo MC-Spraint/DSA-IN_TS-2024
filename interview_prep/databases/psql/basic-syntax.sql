@@ -1,3 +1,35 @@
+-- Departments Table
+CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY, 
+    department_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Employees Table
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE DEFAULT CURRENT_DATE,
+    salary DECIMAL(10, 2) CHECK (salary > 0),
+    department_id INT,
+    FOREIGN KEY (department_id) REFERENCES departments(department_id) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE
+);
+SELECT
+    employee_id,
+    department_id,
+    salary,
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank,
+    DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as dense_rank,
+    PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as percent_rank,
+    LAG(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as prev_salary,
+    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as next_salary
+FROM
+    employees;
+
+
 -- Date/Time Functions
 SELECT CURRENT_DATE AS current_date;
 
@@ -63,9 +95,6 @@ SELECT MIN(salary) AS min_salary FROM employees;
 
 SELECT COUNT(*) AS total_employees FROM employees;
 
-
-
-
 SELECT BIT_OR(flags) AS bitwise_or FROM flags_table; 
 
 -- 6. ARRAY_AGG() - Collects values into an array SELECT ARRAY_AGG(employee_name) AS employee_names FROM employees; 
@@ -130,12 +159,12 @@ FROM
 
 -- Constraints
 CREATE TABLE departments (
-    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    department_id SERIAL PRIMARY KEY,
     department_name VARCHAR(50) NOT NULL,
     UNIQUE (department_name)
 );
 CREATE TABLE employees (
-    employee_id INT AUTO_INCREMENT PRIMARY KEY,  -- PRIMARY KEY and AUTO_INCREMENT
+    employee_id SERIAL PRIMARY KEY,  -- PRIMARY KEY and AUTO_INCREMENT
     first_name VARCHAR(50) NOT NULL,             -- NOT NULL constraint
     last_name VARCHAR(50) NOT NULL,              -- NOT NULL constraint
     email VARCHAR(100) UNIQUE NOT NULL,          -- UNIQUE and NOT NULL constraint
@@ -146,3 +175,51 @@ CREATE TABLE employees (
     ON DELETE SET NULL                           -- FOREIGN KEY constraint with ON DELETE action
     ON UPDATE CASCADE                            -- FOREIGN KEY constraint with ON UPDATE action
 );
+-- Insert into departments table
+INSERT INTO departments (department_name) VALUES
+    ('Sales'),
+    ('Marketing'),
+    ('Engineering'),
+    ('Human Resources'),
+    ('Finance'),
+    ('IT'),
+    ('Customer Support'),
+    ('Legal'),
+    ('Operations');
+
+-- Insert into employees table
+INSERT INTO employees (first_name, last_name, email, salary, department_id) VALUES
+    ('John', 'Doe', 'john.doe@example.com', 50000.00, 1),
+    ('Jane', 'Smith', 'jane.smith@example.com', 60000.00, 2),
+    ('David', 'Lee', 'david.lee@example.com', 75000.00, 3),
+    ('Sarah', 'Jones', 'sarah.jones@example.com', 45000.00, 4),
+    ('Michael', 'Brown', 'michael.brown@example.com', 80000.00, 5),
+    ('Emily', 'Davis', 'emily.davis@example.com', 65000.00, 6),
+    ('Daniel', 'Wilson', 'daniel.wilson@example.com', 55000.00, 7),
+    ('Olivia', 'Taylor', 'olivia.taylor@example.com', 90000.00, 8),
+    ('James', 'Anderson', 'james.anderson@example.com', 70000.00, 9),
+    ('Christopher', 'Martinez', 'christopher.martinez@example.com', 52000.00, 1),
+    ('Amanda', 'Garcia', 'amanda.garcia@example.com', 62000.00, 2),
+    ('Joseph', 'Rodriguez', 'joseph.rodriguez@example.com', 78000.00, 3),
+    ('Barbara', 'Clark', 'barbara.clark@example.com', 48000.00, 4),
+    ('Charles', 'Walker', 'charles.walker@example.com', 85000.00, 5),
+    ('Marie', 'Perez', 'marie.perez@example.com', 68000.00, 6),
+    ('Jennifer', 'Hall', 'jennifer.hall@example.com', 58000.00, 7),
+    ('Andrew', 'Young', 'andrew.young@example.com', 95000.00, 8),
+    ('Thomas', 'Lee', 'thomas.lee@example.com', 72000.00, 9),
+    ('Joshua', 'Wright', 'joshua.wright@example.com', 54000.00, 1),
+    ('Brittany', 'Lopez', 'brittany.lopez@example.com', 64000.00, 2);
+    
+SELECT
+    employee_id,
+    department_id,
+    salary,
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank,
+    DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as dense_rank,
+    PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as percent_rank,
+    LAG(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as prev_salary,
+    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as next_salary
+FROM
+    employees;
+    
+    
