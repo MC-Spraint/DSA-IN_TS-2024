@@ -189,36 +189,39 @@ INSERT INTO departments (department_name) VALUES
 
 -- Insert into employees table
 INSERT INTO employees (first_name, last_name, email, salary, department_id) VALUES
-    ('John', 'Doe', 'john.doe@example.com', 50000.00, 1),
-    ('Jane', 'Smith', 'jane.smith@example.com', 60000.00, 2),
-    ('David', 'Lee', 'david.lee@example.com', 75000.00, 3),
-    ('Sarah', 'Jones', 'sarah.jones@example.com', 45000.00, 4),
-    ('Michael', 'Brown', 'michael.brown@example.com', 80000.00, 5),
-    ('Emily', 'Davis', 'emily.davis@example.com', 65000.00, 6),
-    ('Daniel', 'Wilson', 'daniel.wilson@example.com', 55000.00, 7),
-    ('Olivia', 'Taylor', 'olivia.taylor@example.com', 90000.00, 8),
-    ('James', 'Anderson', 'james.anderson@example.com', 70000.00, 9),
-    ('Christopher', 'Martinez', 'christopher.martinez@example.com', 52000.00, 1),
-    ('Amanda', 'Garcia', 'amanda.garcia@example.com', 62000.00, 2),
-    ('Joseph', 'Rodriguez', 'joseph.rodriguez@example.com', 78000.00, 3),
-    ('Barbara', 'Clark', 'barbara.clark@example.com', 48000.00, 4),
-    ('Charles', 'Walker', 'charles.walker@example.com', 85000.00, 5),
-    ('Marie', 'Perez', 'marie.perez@example.com', 68000.00, 6),
-    ('Jennifer', 'Hall', 'jennifer.hall@example.com', 58000.00, 7),
-    ('Andrew', 'Young', 'andrew.young@example.com', 95000.00, 8),
-    ('Thomas', 'Lee', 'thomas.lee@example.com', 72000.00, 9),
-    ('Joshua', 'Wright', 'joshua.wright@example.com', 54000.00, 1),
-    ('Brittany', 'Lopez', 'brittany.lopez@example.com', 64000.00, 2);
+    ('John', 'Doe', 'john.doe@example.com', 500.00, 1),
+    ('Brittany', 'Lopez', 'brittany.gomez@example.com', 640.00, 1),
+    ('Jane', 'Smith', 'jane.smith@example.com', 600.00, 2),
+    ('David', 'Lee', 'david.lee@example.com', 750.00, 3),
+    ('Sarah', 'Jones', 'sarah.jones@example.com', 450.00, 4),
+    ('Michael', 'Brown', 'michael.brown@example.com', 800.00, 5),
+    ('Emily', 'Davis', 'emily.davis@example.com', 650.00, 6),
+    ('Daniel', 'Wilson', 'daniel.wilson@example.com', 550.00, 7),
+    ('Olivia', 'Taylor', 'olivia.taylor@example.com', 900.00, 8),
+    ('James', 'Anderson', 'james.anderson@example.com', 7000.00, 9),
+    ('Christopher', 'Martinez', 'christopher.martinez@example.com', 500.00, 1),
+    ('Amanda', 'Garcia', 'amanda.garcia@example.com', 920.00, 2),
+    ('Joseph', 'Rodriguez', 'joseph.rodriguez@example.com', 780.00, 3),
+    ('Barbara', 'Clark', 'barbara.clark@example.com', 480.00, 4),
+    ('Charles', 'Walker', 'charles.walker@example.com', 850.00, 5),
+    ('Marie', 'Perez', 'marie.perez@example.com', 680.00, 6),
+    ('Jennifer', 'Hall', 'jennifer.hall@example.com', 580.00, 7),
+    ('Andrew', 'Young', 'andrew.young@example.com', 950.00, 8),
+    ('Thomas', 'Lee', 'thomas.lee@example.com', 720.00, 9),
+    ('Joshua', 'Wright', 'joshua.wright@example.com', 400.00, 1),
+    ('Brittany', 'Lopez', 'brittany.lopez@example.com', 640.00, 2);
     
-SELECT
+SELECT 
     employee_id,
     department_id,
     salary,
-    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank,
     DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as dense_rank,
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank,
+    ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) as row_number, 
     PERCENT_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as percent_rank,
     LAG(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as prev_salary,
-    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as next_salary
+    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary DESC) as next_salary,
+    FIRST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary DESC) as highest_salary 
 FROM
     employees;
     
