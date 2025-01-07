@@ -187,7 +187,8 @@ CREATE TABLE employees (
         ON UPDATE CASCADE                            -- FOREIGN KEY constraint with ON UPDATE action
 );
 -- Insert into departments table
-INSERT INTO departments
+INSERT INTO 
+    departments
     (department_name) 
 VALUES
     ('Sales'),
