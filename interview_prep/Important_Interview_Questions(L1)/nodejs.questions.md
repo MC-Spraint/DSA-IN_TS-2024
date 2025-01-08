@@ -14,7 +14,7 @@ us to execute other programs, scripts, or commands from within the application l
 
 #### [3] Cluster Module:
 
-The Cluster module in Node.js enables the creation of **worker processes** to distribute incoming network traffic, **providing a form of load balancing** and improving the application's overall scalability.
+In NodeJs, the Cluster module enables the creation of **worker processes** to distribute incoming network traffic, **providing a form of load balancing** and improving the application's overall scalability.
 
 #### [4] How does Node.js handle child threads?
 
@@ -39,8 +39,7 @@ This is the reason beind Nodejs being single-threaded.
 #### [7] What is concurrency in NodeJs and how is it achieved?
 
 Concurrency refers to the ability of the runtime environment to handle multiple tasks **simultaneously**.
-Node.js is inherently single-threaded, meaning it processes JavaScript code using a single main thread.
-However, Node.js achieves concurrency through **non-blocking I/O operations** and **event-driven architecture**, rather than traditional multi-threading.
+Node.js achieves concurrency through **non-blocking I/O operations** and **event-driven architecture**, rather than traditional multi-threading, despite being inheritentlty single threaded.
 
 #### [8] How NodeJs becomes asynchronous
 
@@ -49,18 +48,20 @@ Even though Node.js is single-threaded, it operates on a **non-blocking I/O** an
 Asynchronous functions return promises, which represent eventual success or failure of the program. 
 Node.js assigns callbacks to these asynchronous functions instead of waiting for their completion before proceeding to the next, contributing to its non-blocking nature.
 
-When these functions complete, they are popped out of the call stack, each firing an event with a callback attached to it. These events are then pushed into the event queue sequentially, and as they come out (in a FIFO pattern), the Event Loop processes them one by one, executing their corresponding callbacks. It constantly checks the queue to see if more events are waiting to be processed. If there are, it takes each event one by one and processses them, thereby making Node.js asynchronous.
+When asynchronous functions complete, they are popped off the call stack, each triggering an event, and their associated callback functions are pushed into the callback queue (also known as the event queue) in sequence.
+The event loop processes these callbacks one by one and constantly monitors the queue for more callbacks awaiting processing. Whenever there are, it takes each callback one by one and processes them, thereby making NodeJs asynchronous.
 
 #### [9] Event Loop:
 
-The event loop is the mechanism that enables NodeJs to achieve **'Non-blocking' I/O and 'Event-driven' concurrency** despite JavaScript being single-threaded.
+The event loop is the mechanism that enables NodeJs to achieve **non-blocking I/O** and **event-driven concurrency** despite JavaScript being single-threaded.
 
 In Node.js, most operations are executed asynchronously.
-When these functions complete, they are popped out of the call stack, each firing an event with a callback attached to it. These events are then pushed into the event queue sequentially, and as they come out (in a FIFO pattern), the Event Loop processes them one by one, executing their corresponding callbacks. It constantly checks the queue to see if more events are waiting to be processed. If there are, it takes each event one by one and processs them, thereby making Node.js asynchronous.
+When asynchronous functions complete, they are popped off the call stack, each triggering an event, and their associated callback functions are pushed into the callback queue (also known as the event queue) in sequence.
+The event loop processes these callbacks one by one and constantly monitors the queue for more callbacks awaiting processing. Whenever there are, it takes each callback one by one and processes them, thereby making NodeJs asynchronous.
 
 #### [10] Event-Emitter
 
-In Node.js, an EventEmitter is a **built-in class** that **facilitates communication** between objects in a **publisher-subscriber pattern.**
+EventEmitter is a **built-in class** that **facilitates communication** between objects in a **publisher-subscriber pattern.**
 It allows certain objects called "emitters" to emit named events that cause associated functions called "listeners" or "handlers" to be called when the event occurs.
 
 #### [11] Middlewares:
@@ -99,22 +100,13 @@ Promisification is the process of **converting callback-based asynchronous funct
 
 Promisification can be done manually by wrapping existing functions with Promise constructors or using utility libraries like util.promisify() in Node.js.
 
-#### [16] Explain the difference between process.nextTick() and setImmediate().
-
-Both functions are part of Node.js's event loop. process.nextTick() schedules a callback function to be invoked at the end of the current operation, before the next event loop tick starts. It effectively queues the callback to be executed after the current script but before any I/O events or timers.
-
-setImmediate(), on the other hand, schedules a callback to be executed on the next iteration of the event loop, allowing I/O operations to proceed. It is designed to execute a script once the current poll phase completes.
-
-#### [17] Call-Stack Vs Callback-queue
+#### [16] Call-Stack Vs Callback-queue
 
 ##### Call-stack
-The call stack is a data structure that tracks the execution of functions calls that are currently being executed allowing the JavaScript runtime to manage function invocation and control flow.
+The call stack is a data structure that keeps track of the current execution of functions calls, allowing the runtime to manage function invocation and control flow. It handles synchronous operations so if an operation is blocking, it can freeze the entire call stack causing the program to become unresponsive.
 
 When a function is invoked, it is pushed onto the top of the call stack.
-
 When the function is finished executing, it is popped out of the stack.
-
-The call stack handles synchronous operations. If an operation is blocking it can freeze the call stack causing the program to become unresponsive.
 
 ##### Callback-queue
 
@@ -124,6 +116,11 @@ Once the call stack is empty, the event loop takes a callback from the queue and
 
 The callback queue is primarily responsible for handling asynchronous operations.
 
+#### [17] Explain the difference between process.nextTick() and setImmediate().
+
+process.nextTick() schedules a callback function to be invoked at the end of the current operation, before the next event loop tick starts. It effectively queues the callback to be executed after the current script but before any I/O events or timers.
+
+setImmediate(), on the other hand, schedules a callback to be executed on the next iteration of the event loop, allowing I/O operations to proceed. It is designed to execute a script once the current poll phase completes.
 
 #### [18] REPL
 
