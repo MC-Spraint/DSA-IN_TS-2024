@@ -1,12 +1,3 @@
-const p = Promise.all([asyncFunction])
-  .then((results) => {
-    console.log("All promises resolved:", results);
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
-console.log(p);
-
 // Async function that returns a pending promise
 async function asyncFunction() {
   return new Promise((resolve, reject) => {
@@ -59,6 +50,14 @@ resolveAllPromises2();
 resolveAllPromises3();
 //will run in parallel
 //async await is used because promises2 contains awit keyword
+const p = Promise.all([asyncFunction])
+  .then((results) => {
+    console.log("All promises resolved:", results);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+console.log(p);
 
 
 async function asyncExample() {
@@ -105,7 +104,27 @@ async function asyncExample() {
 asyncExample();
 
 
+console.log("Main Thread: Start");
 
+setTimeout(() => {
+  console.log("Timeout");
+}, 0);
+
+setImmediate(() => {
+  console.log("Immediate");
+});
+
+process.nextTick(() => {
+  console.log("Next Tick");
+});
+
+console.log("Main Thread: End");
+
+// Main Thread: Start
+// Main Thread: End
+// Next Tick
+// Immediate
+// Timeout
 
 
 

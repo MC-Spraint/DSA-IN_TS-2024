@@ -45,29 +45,41 @@ Node.js achieves concurrency through **non-blocking I/O operations** and **event
 
 Even though Node.js is single-threaded, it operates on a **non-blocking I/O** and **event-driven architecture**, allowing code to execute asynchronously. 
 
-Asynchronous functions return promises, which represent eventual success or failure of the program. 
-Node.js assigns callbacks to these asynchronous functions instead of waiting for their completion before proceeding to the next, contributing to its non-blocking nature.
+When asynchronous functions initialize, their associated callback functions are registered and added to the callback queue (a.k.a event queue) in sequence, where they wait to be processed by the event loop. 
 
-When asynchronous functions complete, they are popped off the call stack, each triggering an event, and their associated callback functions are pushed into the callback queue (also known as the event queue) in sequence.
-The event loop processes these callbacks one by one and constantly monitors the queue for more callbacks awaiting processing. Whenever there are, it takes each callback one by one and processes them, thereby making NodeJs asynchronous.
-
+The event loop continuously monitors the callback queue for callbacks that are waiting to be processed. When callbacks are present in the queue, the even loop takes them one by one and processes them, thus making NodeJs asynchronous.
 #### [9] Event Loop:
 
-The event loop is the mechanism that enables NodeJs to achieve **non-blocking I/O** and **event-driven concurrency** despite JavaScript being single-threaded.
+The event loop is the mechanism that enables Node.Js to achieve **non-blocking I/O** and **event-driven concurrency**, handling asynchronous operations efficiently despite Node.Js being single-threaded.
 
 In Node.js, most operations are executed asynchronously.
-When asynchronous functions complete, they are popped off the call stack, each triggering an event, and their associated callback functions are pushed into the callback queue (also known as the event queue) in sequence.
-The event loop processes these callbacks one by one and constantly monitors the queue for more callbacks awaiting processing. Whenever there are, it takes each callback one by one and processes them, thereby making NodeJs asynchronous.
+When asynchronous functions initialize, their associated callback functions are registered and added to the callback queue (a.k.a event queue) in sequence, where they wait to be processed by the event loop. 
 
-#### [10] Event-Emitter
+The event loop continuously monitors the callback queue for callbacks that are waiting to be processed. When callbacks are present in the queue, the even loop takes them one by one and processes them, thus making NodeJs asynchronous.
+
+##### -Event Loop Phases
+
+**Timers:** This phase checks if any timers (set by setTimeout() or setInterval()) are ready to execute. If a timer’s threshold time has passed, its associated callback is pushed to the callback queue.
+
+**I/O Callbacks:** This phase handles most of the system operations like reading files, network requests, and database queries that are non-blocking in nature. The I/O callbacks that are ready are executed here.
+
+**Idle, Prepare:** This phase is mostly used internally for preparing and managing other parts of the event loop. Developers typically don’t interact with this phase.
+
+**Poll:** The poll phase is where the event loop spends most of its time. In this phase, the event loop waits for new I/O events. If there are no timers to process, it will wait for new events to arrive or for the callback queue to be populated.
+
+**Check:** The check phase invokes any setImmediate() callbacks that have been added to the queue. As the code is executed, the event loop will eventually reach the poll phase. However, if a callback has been scheduled using setImmediate() and the poll phase becomes idle, the event loop will proceed directly to the check phase instead of waiting for poll events to occur.
+
+**Close Callbacks:** This phase is where callbacks related to closing events (like socket.on('close')) are executed. When a socket or handle is closed suddenly, the close event is emitted in this phase However, if the closure is not immediate, the close event will be emitted using process.nextTick().
+
+#### [10] Libuv:
+
+Libuv is a **multi-platform support library** written in C that provides **asynchronous I/O operations** and abstracts operating system-specific functionalities, such as networking, file system access, and concurrency primitives. It serves as the core component of Node.js's event loop implementation, handling tasks such as managing I/O events, timers, and callbacks. 
+Libuv enables Node.js to achieve **non-blocking I/O** and **event-driven concurrency** by efficiently handling asynchronous operations on various platforms, including Linux, macOS, and Windows. Its cross-platform nature ensures consistent behavior and performance across different operating systems.
+
+#### [11] Event-Emitter
 
 EventEmitter is a **built-in class** that **facilitates communication** between objects in a **publisher-subscriber pattern.**
 It allows certain objects called "emitters" to emit named events that cause associated functions called "listeners" or "handlers" to be called when the event occurs.
-
-#### [11] Middlewares:
-
-In the context of Node.js, middleware refers to the functions that have access to the request and response objects in the HTTP request-response cycle.
-These functions can modify the request and response objects, execute any code, end the request-response cycle, and call the next middleware function in the stack.
 
 #### [12] Difference between Call-backs and Promises
 
@@ -103,18 +115,16 @@ Promisification can be done manually by wrapping existing functions with Promise
 #### [16] Call-Stack Vs Callback-queue
 
 ##### Call-stack
-The call stack is a data structure that keeps track of the current execution of functions calls, allowing the runtime to manage function invocation and control flow. It handles synchronous operations so if an operation is blocking, it can freeze the entire call stack causing the program to become unresponsive.
+The call stack is a data structure that keeps track of the current execution of functions calls, allowing the runtime to manage function invocation and control flow.
+The call stack handles operations synchronously so if an operation is blocking, it can freeze the entire call stack causing the program to become unresponsive.
 
 When a function is invoked, it is pushed onto the top of the call stack.
 When the function is finished executing, it is popped out of the stack.
 
 ##### Callback-queue
 
-When an asynchronous operation is done executing, it's callback is pushed into a callback-queue awaiting to be either rejected or fullfiled by the event-lopp.
+When an asynchronous operation is done executing, it's callback is pushed into a data structure called callback-queue, awaiting to be either fulfilled or rejected by the event-lopp.
 
-Once the call stack is empty, the event loop takes a callback from the queue and pushes it to the call stack for execution.
-
-The callback queue is primarily responsible for handling asynchronous operations.
 
 #### [17] Explain the difference between process.nextTick() and setImmediate().
 
@@ -122,9 +132,10 @@ process.nextTick() schedules a callback function to be invoked at the end of the
 
 setImmediate(), on the other hand, schedules a callback to be executed on the next iteration of the event loop, allowing I/O operations to proceed. It is designed to execute a script once the current poll phase completes.
 
-#### [18] REPL
+#### [18] Middlewares:
 
-In short, a REPL (Read-Eval-Print Loop) is an interactive programming environment that reads, evaluates, and prints user inputs, allowing for quick experimentation and execution of code snippets. It's commonly used for testing small pieces of code, exploring language features, and debugging.
+In the context of Node.js, middleware refers to the functions that have access to the request and response objects in the HTTP request-response cycle.
+These functions can modify the request and response objects, execute any code, end the request-response cycle, and call the next middleware function in the stack.
 
 #### [19] Reactor Pattern
 
@@ -162,10 +173,10 @@ In Node.js, polling refers to the process of periodically checking for changes o
 
 In Node.js, control flow refers to the order in which statements and functions are executed in your code. Node.js operates on a single-threaded, event-driven model, which means that it executes JavaScript code in a non-blocking, asynchronous manner.
 
-#### [17] Libuv:
+#### [26] REPL
 
-Libuv is a **multi-platform support library** that provides **asynchronous I/O operations** and abstracts operating system-specific functionalities, such as networking, file system access, and concurrency primitives.
-It serves as the core component of Node.js's event loop implementation, handling tasks such as managing I/O events, timers, and callbacks. Libuv enables Node.js to achieve **non-blocking I/O** and **event-driven concurrency** by efficiently handling asynchronous operations on various platforms, including Linux, macOS, and Windows. Its cross-platform nature ensures consistent behavior and performance across different operating systems.
+In short, a REPL (Read-Eval-Print Loop) is an interactive programming environment that reads, evaluates, and prints user inputs, allowing for quick experimentation and execution of code snippets. It's commonly used for testing small pieces of code, exploring language features, and debugging.
+
 
 #### [27] Tracing
 
