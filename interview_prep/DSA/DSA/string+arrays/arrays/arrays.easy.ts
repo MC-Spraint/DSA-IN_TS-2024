@@ -150,6 +150,7 @@ export class ArraysEasy {
 
     reverse(nums, 0, k - 1);
     reverse(nums, k, n);
+    
     reverse(nums, 0, n);
     //Reverse the entire array at last to rotate to left
     //Reverse the entire array at first to rotate to right

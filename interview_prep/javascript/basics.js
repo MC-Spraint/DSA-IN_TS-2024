@@ -1,3 +1,55 @@
+console.log("Main Thread: Start");
+process.nextTick(() => console.log('process.nextTick'));
+setImmediate(() => console.log('setImmediate'));
+Promise.resolve().then(() => console.log('Promise'));
+setTimeout(() => console.log('setTimeout'), 0);
+console.log("Main Thread: End");
+setInterval(() => console.log("setInterval"), 1000);
+// Output
+// [1] Main Thread: Start
+// [2] Main Thread: End
+// [3] process.nextTick
+// [4] setImmediate
+// [5] Promise
+// [6] setTimeout
+// [7] setInterval
+
+console.log("false | false: ", false | false);
+console.log("true | false: ", true | false);
+console.log("true | true: ", true & true);
+console.log("false & false: ", false & false);
+console.log("false & true: ", false & true);
+console.log("true & true: ", true & true);
+console.log("false - '2': ", false - '2');
+console.log("2 - false: ", 2 - false);
+console.log("true > 0: ", true > 0);
+console.log("false < true: ", false < true);
+console.log("false > true: ", false > true);
+console.log("0 == false: ", 0 == false);
+console.log("'0' == false: ", '0' == false);
+console.log("'0' == true: ", '0' == true);
+console.log("'2' + 2 - true - true: ",'2' + 2 - true - true);
+console.log("'0' + 0: ", '0' + 0);
+console.log("0 + '0': ", 0 + '0');
+// Output
+// false | false:  0
+// true | false:  1
+// true | true:  1
+// false & false:  0
+// false & true:  0
+// true & true:  1
+// false - '2':  -2
+// 2 - false:  2
+// true > 0:  true
+// false < true:  true
+// false > true:  false
+// 0 == false:  true
+// '0' == false:  true
+// '0' == true:  false
+// '2' + 2 - true - true:  20
+// '0' + 0:  00
+// 0 + '0':  00
+
 // Async function that returns a pending promise
 async function asyncFunction() {
   return new Promise((resolve, reject) => {
@@ -104,27 +156,6 @@ async function asyncExample() {
 asyncExample();
 
 
-console.log("Main Thread: Start");
-
-setTimeout(() => {
-  console.log("Timeout");
-}, 0);
-
-setImmediate(() => {
-  console.log("Immediate");
-});
-
-process.nextTick(() => {
-  console.log("Next Tick");
-});
-
-console.log("Main Thread: End");
-
-// Main Thread: Start
-// Main Thread: End
-// Next Tick
-// Immediate
-// Timeout
 
 
 
