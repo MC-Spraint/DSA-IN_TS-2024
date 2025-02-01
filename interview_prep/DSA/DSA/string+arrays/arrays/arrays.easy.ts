@@ -144,21 +144,21 @@ function rotateArray(nums: number[], k: number): void {
 /**[10] */
 function searchInRotatedArray(nums: number[], target: number): number {
   let l = 0;
-  let r = nums.length - 1;
+  let h = nums.length - 1;
 
-  while (l <= r) {
-    const m = Math.floor((l + r) / 2);
+  while (l <= h) {
+    const m = Math.floor((l + h) / 2);
 
     if (nums[m] === target) return m;
-    // Right-half is sorted
+    // Left-half is sorted
     if (nums[l] <= nums[m]) {
-      if (nums[l] <= target && target < nums[m]) r = m - 1;
+      if (nums[l] <= target && target < nums[m]) h = m - 1;
       else l = m + 1;
     }
-    // Left-half is sorted
+    // Right-half is sorted
     else {
-      if (nums[m] < target && target <= nums[r]) l = m + 1;
-      else r = m - 1;
+      if (nums[m] < target && target <= nums[h]) l = m + 1;
+      else h = m - 1;
     }
   }
   return -1; // Target not found
